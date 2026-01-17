@@ -434,6 +434,26 @@
         display: block !important;
       }
     }
+    
+    /* Slide out animation for sent emails */
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+    
+    .slide-out {
+      animation: slideOut 0.3s ease forwards;
+    }
+    
+    /* Slide in animation for next email */
+    @keyframes slideIn {
+      from { transform: translateY(-10px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    .slide-in {
+      animation: slideIn 0.3s ease forwards;
+    }
     </style>
 </head>
 
@@ -549,7 +569,7 @@
                         </h3>
                         <button id="generateAiTemplate" class="text-sm px-3 py-1 rounded-lg bg-gradient-to-r from-accent-500 to-purple-600 text-white hover:opacity-90">
                             <svg class="w-4 h-4 inline mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M9.663 17H4.495C3.219 17 2.188 15.969 2.188 14.693V4.496C2.188 3.22 3.22 2.188 4.495 2.188H15.692C16.968 2.188 18 3.22 18 4.496V9.663M21.378 15.622C21.378 18.742 18.856 21.264 15.736 21.264C12.616 21.264 10.094 18.742 10.094 15.622C10.094 12.502 12.616 9.98 15.736 9.98C18.856 9.98 21.378 12.502 21.378 15.622Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M9.663 17H4.495C3.219 17 2.188 15.969 2.188 14.693V4.496C2.188 3.22 3.22 2.188 4.495 2.188H15.692C16.968 2.188 18 3.22 18 4.496V9.663M7.5 14.5L9.5 16.5L14.5 11.5M21.378 15.622C21.378 18.742 18.856 21.264 15.736 21.264C12.616 21.264 10.094 18.742 10.094 15.622C10.094 12.502 12.616 9.98 15.736 9.98C18.856 9.98 21.378 12.502 21.378 15.622Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                             Generate AI Template
                         </button>
@@ -1038,74 +1058,150 @@
         }
     });
     
-    // Global State
-    let campaignData = {
+    // Enhanced Global State with better data structure
+    let campaignState = {
         emails: [],
-        sentEmails: new Set(JSON.parse(localStorage.getItem('sentEmails') || '[]')),
+        sentEmails: new Set(),
         currentFilter: 'all',
-        aiTemplates: {
-            sales: [
-                {
-                    name: "Sales Pitch - High Conversion",
-                    subject: "Quick question about {company}'s growth",
-                    body: "Hi {name},\n\nI noticed {company} is doing impressive work in the industry. I have some ideas that could help accelerate your growth by 30-40%.\n\nWould you have 15 minutes this week for a quick chat?\n\nBest regards,\n[Your Name]",
-                    category: "sales"
-                },
-                {
-                    name: "Value Proposition",
-                    subject: "How {company} can save 20% on operations",
-                    body: "Hello {name},\n\nBased on my analysis of companies like {company}, I've identified opportunities to reduce operational costs by 20% while improving efficiency.\n\nInterested in learning more?\n\nKind regards,\n[Your Name]",
-                    category: "sales"
-                }
-            ],
-            followup: [
-                {
-                    name: "Gentle Follow-up",
-                    subject: "Following up on my previous email",
-                    body: "Hi {name},\n\nJust wanted to follow up on my previous email regarding opportunities for {company}.\n\nDid you get a chance to review it? I'd love to hear your thoughts.\n\nBest regards,\n[Your Name]",
-                    category: "followup"
-                },
-                {
-                    name: "Value-add Follow-up",
-                    subject: "Additional insights for {company}",
-                    body: "Hello {name},\n\nI was thinking more about {company}'s challenges and wanted to share an additional insight that might be helpful.\n\n[Insert specific insight]\n\nWould still love to connect if you're open to it.\n\nKind regards,\n[Your Name]",
-                    category: "followup"
-                }
-            ],
-            networking: [
-                {
-                    name: "Professional Connection",
-                    subject: "Connecting from the industry",
-                    body: "Hi {name},\n\nI came across your profile and was impressed by {company}'s work in the industry. I'd love to connect and learn more about your journey.\n\nWould you be open to a virtual coffee chat?\n\nBest regards,\n[Your Name]",
-                    category: "networking"
-                }
-            ],
-            newsletter: [
-                {
-                    name: "Monthly Newsletter",
-                    subject: "This month's insights for {company}",
-                    body: "Dear {name},\n\nHere are this month's insights that might be valuable for {company}:\n\n1. Industry trend analysis\n2. Best practices from top performers\n3. Upcoming opportunities\n\nLet me know if you'd like to discuss any of these further!\n\nBest,\n[Your Name]",
-                    category: "newsletter"
-                }
-            ]
-        },
-        quickTemplates: {
-            professional: {
-                subject: "Introduction from {company}",
-                body: "Hi {name},\n\nI hope this email finds you well. I'm reaching out from {company} to introduce our services.\n\nWe specialize in helping businesses like yours achieve their goals through innovative solutions.\n\nWould you be open to a brief 15-minute call next week to discuss potential synergies?\n\nLooking forward to hearing from you.\n\nBest regards,\n[Your Name]"
-            },
-            followup: {
-                subject: "Following up on our conversation",
-                body: "Hi {name},\n\nI wanted to follow up on our previous conversation regarding {company}.\n\nI've been thinking about how we could potentially collaborate and wanted to share some additional thoughts.\n\nAre you available for a quick chat sometime this week?\n\nBest regards,\n[Your Name]"
-            },
-            cold: {
-                subject: "Potential opportunity for {company}",
-                body: "Hello {name},\n\nI came across {company} and was impressed by your recent achievements.\n\nI believe there might be an opportunity for us to work together. I have some ideas that could help you [achieve specific goal].\n\nWould you be interested in exploring this further?\n\nKind regards,\n[Your Name]"
-            },
-            partnership: {
-                subject: "Partnership opportunity with {company}",
-                body: "Dear {name},\n\nI'm writing to discuss a potential partnership opportunity between our companies.\n\nBased on {company}'s expertise and our capabilities, I believe we could create something truly remarkable together.\n\nWould you be open to discussing this possibility?\n\nWarm regards,\n[Your Name]"
+        subject: '',
+        body: '',
+        recipients: '',
+        campaignId: null,
+        lastSaveTime: null
+    };
+    
+    // Load all saved data from localStorage
+    function loadAllSavedData() {
+        try {
+            // Load sent emails
+            const savedSentEmails = localStorage.getItem('hbee_sentEmails');
+            if (savedSentEmails) {
+                campaignState.sentEmails = new Set(JSON.parse(savedSentEmails));
             }
+            
+            // Load campaign data
+            const savedCampaign = localStorage.getItem('hbee_campaignData');
+            if (savedCampaign) {
+                const data = JSON.parse(savedCampaign);
+                campaignState.subject = data.subject || '';
+                campaignState.body = data.body || '';
+                campaignState.recipients = data.recipients || '';
+                campaignState.emails = data.emails || [];
+                campaignState.campaignId = data.campaignId || Date.now().toString();
+                
+                // Restore form values
+                elements.subject.value = campaignState.subject;
+                elements.body.value = campaignState.body;
+                elements.recipients.value = campaignState.recipients;
+                
+                // Generate email links if we have emails
+                if (campaignState.emails.length > 0) {
+                    generateEmailLinks(campaignState.emails);
+                }
+            }
+            
+            // Load last save time
+            const lastSave = localStorage.getItem('hbee_lastSaveTime');
+            if (lastSave) {
+                campaignState.lastSaveTime = new Date(lastSave);
+                console.log('Last save time:', campaignState.lastSaveTime.toLocaleString());
+            }
+            
+            updateCounters();
+            updateDashboard();
+            showAlert('Campaign data loaded from previous session', 'success');
+            
+        } catch (error) {
+            console.error('Error loading saved data:', error);
+            showAlert('Error loading saved data', 'error');
+        }
+    }
+    
+    // Save all campaign data
+    function saveAllCampaignData() {
+        try {
+            const campaignData = {
+                subject: campaignState.subject,
+                body: campaignState.body,
+                recipients: campaignState.recipients,
+                emails: campaignState.emails,
+                campaignId: campaignState.campaignId || Date.now().toString()
+            };
+            
+            localStorage.setItem('hbee_campaignData', JSON.stringify(campaignData));
+            localStorage.setItem('hbee_sentEmails', JSON.stringify([...campaignState.sentEmails]));
+            localStorage.setItem('hbee_lastSaveTime', new Date().toISOString());
+            
+            campaignState.lastSaveTime = new Date();
+        } catch (error) {
+            console.error('Error saving campaign data:', error);
+        }
+    }
+    
+    // Initialize AI Templates
+    const aiTemplates = {
+        sales: [
+            {
+                name: "Sales Pitch - High Conversion",
+                subject: "Quick question about {company}'s growth",
+                body: "Hi {name},\n\nI noticed {company} is doing impressive work in the industry. I have some ideas that could help accelerate your growth by 30-40%.\n\nWould you have 15 minutes this week for a quick chat?\n\nBest regards,\n[Your Name]",
+                category: "sales"
+            },
+            {
+                name: "Value Proposition",
+                subject: "How {company} can save 20% on operations",
+                body: "Hello {name},\n\nBased on my analysis of companies like {company}, I've identified opportunities to reduce operational costs by 20% while improving efficiency.\n\nInterested in learning more?\n\nKind regards,\n[Your Name]",
+                category: "sales"
+            }
+        ],
+        followup: [
+            {
+                name: "Gentle Follow-up",
+                subject: "Following up on my previous email",
+                body: "Hi {name},\n\nJust wanted to follow up on my previous email regarding opportunities for {company}.\n\nDid you get a chance to review it? I'd love to hear your thoughts.\n\nBest regards,\n[Your Name]",
+                category: "followup"
+            },
+            {
+                name: "Value-add Follow-up",
+                subject: "Additional insights for {company}",
+                body: "Hello {name},\n\nI was thinking more about {company}'s challenges and wanted to share an additional insight that might be helpful.\n\n[Insert specific insight]\n\nWould still love to connect if you're open to it.\n\nKind regards,\n[Your Name]",
+                category: "followup"
+            }
+        ],
+        networking: [
+            {
+                name: "Professional Connection",
+                subject: "Connecting from the industry",
+                body: "Hi {name},\n\nI came across your profile and was impressed by {company}'s work in the industry. I'd love to connect and learn more about your journey.\n\nWould you be open to a virtual coffee chat?\n\nBest regards,\n[Your Name]",
+                category: "networking"
+            }
+        ],
+        newsletter: [
+            {
+                name: "Monthly Newsletter",
+                subject: "This month's insights for {company}",
+                body: "Dear {name},\n\nHere are this month's insights that might be valuable for {company}:\n\n1. Industry trend analysis\n2. Best practices from top performers\n3. Upcoming opportunities\n\nLet me know if you'd like to discuss any of these further!\n\nBest,\n[Your Name]",
+                category: "newsletter"
+            }
+        ]
+    };
+    
+    const quickTemplates = {
+        professional: {
+            subject: "Introduction from {company}",
+            body: "Hi {name},\n\nI hope this email finds you well. I'm reaching out from {company} to introduce our services.\n\nWe specialize in helping businesses like yours achieve their goals through innovative solutions.\n\nWould you be open to a brief 15-minute call next week to discuss potential synergies?\n\nLooking forward to hearing from you.\n\nBest regards,\n[Your Name]"
+        },
+        followup: {
+            subject: "Following up on our conversation",
+            body: "Hi {name},\n\nI wanted to follow up on our previous conversation regarding {company}.\n\nI've been thinking about how we could potentially collaborate and wanted to share some additional thoughts.\n\nAre you available for a quick chat sometime this week?\n\nBest regards,\n[Your Name]"
+        },
+        cold: {
+            subject: "Potential opportunity for {company}",
+            body: "Hello {name},\n\nI came across {company} and was impressed by your recent achievements.\n\nI believe there might be an opportunity for us to work together. I have some ideas that could help you [achieve specific goal].\n\nWould you be interested in exploring this further?\n\nKind regards,\n[Your Name]"
+        },
+        partnership: {
+            subject: "Partnership opportunity with {company}",
+            body: "Dear {name},\n\nI'm writing to discuss a potential partnership opportunity between our companies.\n\nBased on {company}'s expertise and our capabilities, I believe we could create something truly remarkable together.\n\nWould you be open to discussing this possibility?\n\nWarm regards,\n[Your Name]"
         }
     };
     
@@ -1126,7 +1222,7 @@
     
     // Initialize AI Templates
     function loadAITemplates(category = 'sales') {
-        const templates = campaignData.aiTemplates[category] || [];
+        const templates = aiTemplates[category] || [];
         elements.aiTemplatesContainer.innerHTML = '';
         
         if (templates.length === 0) {
@@ -1186,12 +1282,15 @@
         
         const index = parseInt(applyBtn.dataset.index);
         const category = applyBtn.dataset.category;
-        const template = campaignData.aiTemplates[category][index];
+        const template = aiTemplates[category][index];
         
         if (template) {
             elements.subject.value = template.subject;
             elements.body.value = template.body;
+            campaignState.subject = template.subject;
+            campaignState.body = template.body;
             updateCounters();
+            saveAllCampaignData();
             showAlert(`Applied "${template.name}" template`, 'success');
         }
     });
@@ -1200,13 +1299,16 @@
     document.getElementById('generateAiTemplate').addEventListener('click', function() {
         const categories = ['sales', 'followup', 'networking', 'newsletter'];
         const randomCategory = categories[Math.floor(Math.random() * categories.length)];
-        const templates = campaignData.aiTemplates[randomCategory];
+        const templates = aiTemplates[randomCategory];
         const randomTemplate = templates[Math.floor(Math.random() * templates.length)];
         
         if (randomTemplate) {
             elements.subject.value = randomTemplate.subject;
             elements.body.value = randomTemplate.body;
+            campaignState.subject = randomTemplate.subject;
+            campaignState.body = randomTemplate.body;
             updateCounters();
+            saveAllCampaignData();
             showAlert(`Generated new AI template: ${randomTemplate.name}`, 'success');
             
             // Show confetti for fun
@@ -1222,12 +1324,15 @@
     document.querySelectorAll('[data-template]').forEach(button => {
         button.addEventListener('click', function() {
             const templateName = this.dataset.template;
-            const template = campaignData.quickTemplates[templateName];
+            const template = quickTemplates[templateName];
             
             if (template) {
                 elements.subject.value = template.subject;
                 elements.body.value = template.body;
+                campaignState.subject = template.subject;
+                campaignState.body = template.body;
                 updateCounters();
+                saveAllCampaignData();
                 showAlert(`Applied "${templateName}" template`, 'success');
             }
         });
@@ -1251,7 +1356,7 @@
         return domain.split('.')[0]?.charAt(0).toUpperCase() + domain.split('.')[0]?.slice(1) || 'Company';
     }
     
-    // Update Counters
+    // Update Counters and Save Data
     function updateCounters() {
         const emails = elements.recipients.value.split('\n').filter(e => e.trim());
         const validEmails = emails.filter(isValidEmail);
@@ -1273,24 +1378,25 @@
             elements.body.value = elements.body.value.slice(0, 2000);
         }
         
-        // Auto-save
-        autoSave();
+        // Update campaign state
+        campaignState.subject = elements.subject.value;
+        campaignState.body = elements.body.value;
+        campaignState.recipients = elements.recipients.value;
+        
+        // Save to localStorage
+        saveAllCampaignData();
     }
     
-    // Event Listeners for counters
-    elements.recipients.addEventListener('input', updateCounters);
-    elements.subject.addEventListener('input', updateCounters);
-    elements.body.addEventListener('input', updateCounters);
-    
-    // Auto-save function
-    function autoSave() {
-        const campaignDataToSave = {
-            subject: elements.subject.value,
-            body: elements.body.value,
-            emails: campaignData.emails
-        };
-        localStorage.setItem('campaignData', JSON.stringify(campaignDataToSave));
+    // Event Listeners for counters with debouncing
+    let saveTimeout;
+    function debouncedSave() {
+        clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(updateCounters, 1000);
     }
+    
+    elements.recipients.addEventListener('input', debouncedSave);
+    elements.subject.addEventListener('input', debouncedSave);
+    elements.body.addEventListener('input', debouncedSave);
     
     // Validate Emails
     document.getElementById('validateBtn').addEventListener('click', function() {
@@ -1300,6 +1406,7 @@
         if (emails.some(e => e.trim() && !isValidEmail(e.trim()))) {
             showAlert(`Found ${emails.length - validEmails.length} invalid emails. Keeping only valid ones.`, 'warning');
             elements.recipients.value = validEmails.join('\n');
+            campaignState.recipients = elements.recipients.value;
             updateCounters();
         } else {
             showAlert('All emails are valid!', 'success');
@@ -1309,6 +1416,7 @@
     // Clear button
     document.getElementById('clearBtn').addEventListener('click', () => {
         elements.recipients.value = '';
+        campaignState.recipients = '';
         updateCounters();
         showAlert('Recipients cleared', 'info');
     });
@@ -1317,6 +1425,7 @@
     document.querySelectorAll('[data-subject]').forEach(button => {
         button.addEventListener('click', function() {
             elements.subject.value = this.dataset.subject;
+            campaignState.subject = this.dataset.subject;
             updateCounters();
         });
     });
@@ -1345,9 +1454,13 @@
         }
         
         // Process emails
-        campaignData.emails = [...new Set(emails)]; // Remove duplicates
-        generateEmailLinks(campaignData.emails);
-        showAlert(`Generated ${campaignData.emails.length} email links!`, 'success');
+        campaignState.emails = [...new Set(emails)]; // Remove duplicates
+        campaignState.recipients = emails.join('\n');
+        
+        // Generate email links and save data
+        generateEmailLinks(campaignState.emails);
+        saveAllCampaignData();
+        showAlert(`Generated ${campaignState.emails.length} email links!`, 'success');
         
         // Scroll to email list on mobile
         if (window.innerWidth < 768) {
@@ -1374,6 +1487,7 @@
             
             if (emails.length > 0) {
                 elements.recipients.value = emails.join('\n');
+                campaignState.recipients = elements.recipients.value;
                 updateCounters();
                 showAlert(`Loaded ${emails.length} unique emails from file`, 'success');
             } else {
@@ -1388,7 +1502,7 @@
         }
     });
     
-    // Generate Email Links
+    // Generate Email Links with detailed storage
     function generateEmailLinks(emails) {
         const emailList = document.getElementById('emailList');
         emailList.innerHTML = '';
@@ -1411,27 +1525,32 @@
             const name = extractNameFromEmail(email);
             const company = extractCompanyFromEmail(email);
             
-            const personalizedSubject = encodeURIComponent(
-                elements.subject.value.replace(/{name}/g, name).replace(/{company}/g, company)
-            );
+            const personalizedSubject = campaignState.subject
+                .replace(/{name}/g, name)
+                .replace(/{company}/g, company);
             
-            const personalizedBody = encodeURIComponent(
-                elements.body.value.replace(/{name}/g, name).replace(/{company}/g, company)
-            ).replace(/\n/g, '%0D%0A');
+            const personalizedBody = campaignState.body
+                .replace(/{name}/g, name)
+                .replace(/{company}/g, company);
             
-            const mailtoLink = `mailto:${email}?subject=${personalizedSubject}&body=${personalizedBody}`;
+            const encodedSubject = encodeURIComponent(personalizedSubject);
+            const encodedBody = encodeURIComponent(personalizedBody).replace(/\n/g, '%0D%0A');
+            
+            const mailtoLink = `mailto:${email}?subject=${encodedSubject}&body=${encodedBody}`;
             
             const linkItem = document.createElement('div');
-            linkItem.className = 'email-link';
+            linkItem.className = `email-link ${campaignState.sentEmails.has(email) ? 'sent' : ''} slide-in`;
+            linkItem.setAttribute('data-email', email);
             linkItem.innerHTML = `
                 <div class="flex items-center justify-between w-full">
                     <div class="flex-1 min-w-0">
                         <div class="font-medium text-sm truncate">${index + 1}. ${email}</div>
-                        ${campaignData.sentEmails.has(email) ? 
+                        ${campaignState.sentEmails.has(email) ? 
                             '<div class="text-xs text-green-600 dark:text-green-400 mt-1"><svg class="w-3 h-3 inline mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Sent</div>' : 
                             '<div class="text-xs text-yellow-600 dark:text-yellow-400 mt-1"><svg class="w-3 h-3 inline mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 8V12M12 16H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Pending</div>'}
+                        <div class="text-xs text-gray-500 mt-1 truncate" title="${personalizedSubject}">${personalizedSubject.substring(0, 50)}${personalizedSubject.length > 50 ? '...' : ''}</div>
                     </div>
-                    <button class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 ml-3 flex-shrink-0" data-email="${email}" data-link="${mailtoLink}" data-tooltip="Send email">
+                    <button class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 ml-3 flex-shrink-0 send-email-btn" data-email="${email}" data-link="${mailtoLink}" data-tooltip="Send email">
                         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
@@ -1439,72 +1558,106 @@
                 </div>
             `;
             
-            if (campaignData.sentEmails.has(email)) {
-                linkItem.classList.add('sent');
-            }
-            
             emailList.appendChild(linkItem);
         });
         
         updateDashboard();
         applyFilter();
-        autoSave();
     }
     
-    // Send Email
+    // Send Email with animation and removal from pending
     document.getElementById('emailList').addEventListener('click', function(e) {
-        const sendBtn = e.target.closest('button[data-email]');
+        const sendBtn = e.target.closest('.send-email-btn');
         if (!sendBtn) return;
         
         const email = sendBtn.dataset.email;
         const mailtoLink = sendBtn.dataset.link;
         
-        // Mark as sent
-        campaignData.sentEmails.add(email);
-        localStorage.setItem('sentEmails', JSON.stringify([...campaignData.sentEmails]));
-        
-        // Update UI
+        // Find the email link item
         const linkItem = sendBtn.closest('.email-link');
-        linkItem.classList.add('sent');
         
-        // Update status display
-        const statusDiv = linkItem.querySelector('.text-xs');
-        if (statusDiv) {
-            statusDiv.innerHTML = '<svg class="w-3 h-3 inline mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Sent';
-            statusDiv.className = 'text-xs text-green-600 dark:text-green-400 mt-1';
-        }
+        // Add slide-out animation
+        linkItem.classList.add('slide-out');
         
-        // Open email client
-        window.open(mailtoLink, '_blank');
-        
-        updateDashboard();
-        showAlert(`Email opened for ${email}`, 'success');
-        
-        // Celebration for milestones
-        if (campaignData.sentEmails.size % 10 === 0) {
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
-        }
+        // After animation completes, mark as sent and update UI
+        setTimeout(() => {
+            // Mark as sent
+            campaignState.sentEmails.add(email);
+            
+            // Save to localStorage
+            localStorage.setItem('hbee_sentEmails', JSON.stringify([...campaignState.sentEmails]));
+            saveAllCampaignData();
+            
+            // Update the item appearance
+            linkItem.classList.remove('slide-out');
+            linkItem.classList.add('sent');
+            
+            // Update status display
+            const statusDiv = linkItem.querySelector('.text-xs');
+            if (statusDiv) {
+                statusDiv.innerHTML = '<svg class="w-3 h-3 inline mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Sent';
+                statusDiv.className = 'text-xs text-green-600 dark:text-green-400 mt-1';
+            }
+            
+            // Apply filter to potentially hide sent emails
+            if (campaignState.currentFilter === 'pending') {
+                linkItem.style.display = 'none';
+            }
+            
+            updateDashboard();
+            
+            // Open email client
+            window.open(mailtoLink, '_blank');
+            
+            showAlert(`Email opened for ${email}`, 'success');
+            
+            // Celebration for milestones
+            if (campaignState.sentEmails.size % 10 === 0) {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+            
+            // Auto-scroll to next pending email
+            if (campaignState.currentFilter === 'pending' || campaignState.currentFilter === 'all') {
+                autoScrollToNextPending();
+            }
+            
+        }, 300); // Match the animation duration
     });
+    
+    // Auto-scroll to next pending email
+    function autoScrollToNextPending() {
+        const pendingEmails = document.querySelectorAll('.email-link:not(.sent)');
+        if (pendingEmails.length > 0) {
+            const firstPending = pendingEmails[0];
+            firstPending.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            
+            // Add highlight effect
+            firstPending.style.backgroundColor = 'rgba(14, 165, 233, 0.1)';
+            setTimeout(() => {
+                firstPending.style.backgroundColor = '';
+            }, 1000);
+        }
+    }
     
     // Filter Emails - ALL/SENT/PENDING
     document.getElementById('filterAll').addEventListener('click', function() {
-        campaignData.currentFilter = 'all';
+        campaignState.currentFilter = 'all';
         updateFilterButtons('all');
         applyFilter();
     });
     
     document.getElementById('filterSent').addEventListener('click', function() {
-        campaignData.currentFilter = 'sent';
+        campaignState.currentFilter = 'sent';
         updateFilterButtons('sent');
         applyFilter();
     });
     
     document.getElementById('filterPending').addEventListener('click', function() {
-        campaignData.currentFilter = 'pending';
+        campaignState.currentFilter = 'pending';
         updateFilterButtons('pending');
         applyFilter();
     });
@@ -1530,8 +1683,8 @@
         let pendingCount = 0;
         
         items.forEach(item => {
-            const email = item.querySelector('.font-medium')?.textContent.split('. ')[1];
-            const isSent = campaignData.sentEmails.has(email);
+            const email = item.getAttribute('data-email');
+            const isSent = campaignState.sentEmails.has(email);
             
             // Count statistics
             allCount++;
@@ -1539,11 +1692,11 @@
             else pendingCount++;
             
             // Apply filter
-            if (campaignData.currentFilter === 'all') {
+            if (campaignState.currentFilter === 'all') {
                 item.style.display = 'flex';
-            } else if (campaignData.currentFilter === 'sent') {
+            } else if (campaignState.currentFilter === 'sent') {
                 item.style.display = isSent ? 'flex' : 'none';
-            } else if (campaignData.currentFilter === 'pending') {
+            } else if (campaignState.currentFilter === 'pending') {
                 item.style.display = isSent ? 'none' : 'flex';
             }
         });
@@ -1556,8 +1709,8 @@
     
     // Update Dashboard
     function updateDashboard() {
-        const total = campaignData.emails.length;
-        const sent = campaignData.sentEmails.size;
+        const total = campaignState.emails.length;
+        const sent = campaignState.sentEmails.size;
         const pending = total - sent;
         const progress = total > 0 ? Math.round((sent / total) * 100) : 0;
         
@@ -1648,18 +1801,18 @@
     
     // Export Emails
     document.getElementById('exportBtn').addEventListener('click', () => {
-        if (campaignData.emails.length === 0) {
+        if (campaignState.emails.length === 0) {
             showAlert('No emails to export', 'warning');
             return;
         }
         
         let emailsToExport = [];
-        if (campaignData.currentFilter === 'all') {
-            emailsToExport = campaignData.emails;
-        } else if (campaignData.currentFilter === 'sent') {
-            emailsToExport = campaignData.emails.filter(email => campaignData.sentEmails.has(email));
-        } else if (campaignData.currentFilter === 'pending') {
-            emailsToExport = campaignData.emails.filter(email => !campaignData.sentEmails.has(email));
+        if (campaignState.currentFilter === 'all') {
+            emailsToExport = campaignState.emails;
+        } else if (campaignState.currentFilter === 'sent') {
+            emailsToExport = campaignState.emails.filter(email => campaignState.sentEmails.has(email));
+        } else if (campaignState.currentFilter === 'pending') {
+            emailsToExport = campaignState.emails.filter(email => !campaignState.sentEmails.has(email));
         }
         
         if (emailsToExport.length === 0) {
@@ -1667,11 +1820,18 @@
             return;
         }
         
-        const blob = new Blob([emailsToExport.join('\n')], { type: 'text/plain' });
+        // Create detailed export with status
+        let exportData = 'Email Address,Status,Date Generated\n';
+        emailsToExport.forEach(email => {
+            const status = campaignState.sentEmails.has(email) ? 'Sent' : 'Pending';
+            exportData += `${email},${status},${new Date().toLocaleDateString()}\n`;
+        });
+        
+        const blob = new Blob([exportData], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `hbee-emails-${new Date().toISOString().split('T')[0]}.txt`;
+        a.download = `hbee-campaign-${new Date().toISOString().split('T')[0]}.csv`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -1682,11 +1842,22 @@
     
     // Clear All
     document.getElementById('clearAllBtn').addEventListener('click', () => {
-        if (confirm('Clear all campaign data? This will remove all emails and reset progress.')) {
-            campaignData.emails = [];
-            campaignData.sentEmails.clear();
-            localStorage.removeItem('sentEmails');
-            localStorage.removeItem('campaignData');
+        if (confirm('Clear all campaign data? This will remove all emails, templates, and reset progress.')) {
+            campaignState = {
+                emails: [],
+                sentEmails: new Set(),
+                currentFilter: 'all',
+                subject: '',
+                body: '',
+                recipients: '',
+                campaignId: null,
+                lastSaveTime: null
+            };
+            
+            // Clear localStorage
+            localStorage.removeItem('hbee_campaignData');
+            localStorage.removeItem('hbee_sentEmails');
+            localStorage.removeItem('hbee_lastSaveTime');
             
             // Reset form
             elements.recipients.value = '';
@@ -1760,37 +1931,34 @@
         }, 4000);
     }
     
-    // Load saved data
-    function loadSavedData() {
-        const savedCampaign = localStorage.getItem('campaignData');
-        if (savedCampaign) {
-            try {
-                const data = JSON.parse(savedCampaign);
-                if (data.subject) elements.subject.value = data.subject;
-                if (data.body) elements.body.value = data.body;
-                if (data.emails && Array.isArray(data.emails)) {
-                    campaignData.emails = data.emails;
-                    if (data.emails.length > 0) {
-                        elements.recipients.value = data.emails.join('\n');
-                        generateEmailLinks(data.emails);
-                    }
-                }
-            } catch (e) {
-                console.error('Error loading saved data:', e);
-            }
-        }
-        
-        updateCounters();
-        updateDashboard();
-    }
-    
     // Initialize
     window.addEventListener('load', () => {
-        loadSavedData();
-        showAlert('Welcome to Hbee Outreach! Try our AI templates for professional emails.', 'info');
+        // Load all saved data
+        loadAllSavedData();
         
         // Set initial filter button state
         updateFilterButtons('all');
+        
+        // Show welcome message if no data exists
+        if (campaignState.emails.length === 0) {
+            setTimeout(() => {
+                showAlert('Welcome to Hbee Outreach! Try our AI templates for professional emails.', 'info');
+            }, 1000);
+        } else {
+            showAlert(`Loaded ${campaignState.emails.length} emails from previous session`, 'success');
+        }
+        
+        // Auto-save reminder
+        setInterval(() => {
+            if (campaignState.lastSaveTime) {
+                const now = new Date();
+                const diff = (now - campaignState.lastSaveTime) / 1000 / 60; // minutes
+                if (diff >= 5) {
+                    saveAllCampaignData();
+                    console.log('Auto-saved campaign data');
+                }
+            }
+        }, 300000); // Check every 5 minutes
     });
     
     // Pause/Resume functionality
@@ -1804,6 +1972,11 @@
         showAlert('Campaign resumed', 'success');
         document.getElementById('resumeBtn').classList.add('hidden');
         document.getElementById('pauseBtn').classList.remove('hidden');
+    });
+    
+    // Auto-save on page unload
+    window.addEventListener('beforeunload', () => {
+        saveAllCampaignData();
     });
     </script>
 </body>
