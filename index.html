@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hbee Outreach - Email Tool</title>
+    <title>Hbee Outreach - AI Email Tool</title>
     
     <!-- Critical CSS inline for fast loading -->
     <style>
@@ -116,6 +116,30 @@
             content: "✓";
             font-weight: bold;
         }
+        
+        /* AI Template Styling */
+        .ai-template-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 12px;
+            background: white;
+            transition: all 0.2s;
+        }
+        .dark .ai-template-card {
+            background: #1e293b;
+            border-color: #374151;
+        }
+        .ai-template-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+        }
+        .ai-badge {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
     </style>
     
     <!-- Tailwind CSS -->
@@ -133,6 +157,10 @@
                         secondary: {
                             500: '#10b981',
                             600: '#059669',
+                        },
+                        accent: {
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
                         }
                     }
                 }
@@ -158,7 +186,7 @@
                     </div>
                     <div>
                         <h1 class="text-xl font-bold">Hbee Outreach</h1>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">AI Email Tool</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">AI-Powered Email Tool</p>
                     </div>
                 </div>
                 <button id="themeToggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
@@ -183,11 +211,69 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Left Column -->
             <div class="lg:col-span-2 space-y-6">
+                <!-- AI Templates Section -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold flex items-center gap-2">
+                            <svg class="w-5 h-5 text-accent-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9.663 17H4.495C3.219 17 2.188 15.969 2.188 14.693V4.496C2.188 3.22 3.22 2.188 4.495 2.188H15.692C16.968 2.188 18 3.22 18 4.496V9.663M7.5 14.5L9.5 16.5L14.5 11.5M21.378 15.622C21.378 18.742 18.856 21.264 15.736 21.264C12.616 21.264 10.094 18.742 10.094 15.622C10.094 12.502 12.616 9.98 15.736 9.98C18.856 9.98 21.378 12.502 21.378 15.622Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            AI Smart Templates
+                        </h3>
+                        <button id="generateAiTemplate" class="text-sm px-3 py-1 rounded-lg bg-gradient-to-r from-accent-500 to-accent-600 text-white hover:opacity-90">
+                            Generate AI Template
+                        </button>
+                    </div>
+                    
+                    <!-- Template Categories -->
+                    <div class="mb-4">
+                        <div class="text-sm font-medium mb-2 text-gray-600 dark:text-gray-400">Categories:</div>
+                        <div class="flex flex-wrap gap-2">
+                            <button data-category="sales" class="text-sm px-3 py-1.5 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300">
+                                Sales Outreach
+                            </button>
+                            <button data-category="followup" class="text-sm px-3 py-1.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                                Follow-up
+                            </button>
+                            <button data-category="networking" class="text-sm px-3 py-1.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                                Networking
+                            </button>
+                            <button data-category="newsletter" class="text-sm px-3 py-1.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                                Newsletter
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- AI Templates Container -->
+                    <div id="aiTemplates" class="space-y-3">
+                        <!-- Templates will load here -->
+                    </div>
+                </div>
+
                 <!-- Campaign Setup -->
                 <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
                     <h3 class="text-lg font-semibold mb-6">Campaign Setup</h3>
                     
                     <form id="campaignForm" class="space-y-6">
+                        <!-- Quick Templates -->
+                        <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl">
+                            <div class="text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Quick Templates:</div>
+                            <div class="flex flex-wrap gap-2">
+                                <button type="button" data-template="professional" class="text-sm px-3 py-1.5 rounded-full bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500">
+                                    Professional Intro
+                                </button>
+                                <button type="button" data-template="followup" class="text-sm px-3 py-1.5 rounded-full bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500">
+                                    Follow-up
+                                </button>
+                                <button type="button" data-template="cold" class="text-sm px-3 py-1.5 rounded-full bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500">
+                                    Cold Outreach
+                                </button>
+                                <button type="button" data-template="partnership" class="text-sm px-3 py-1.5 rounded-full bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500">
+                                    Partnership
+                                </button>
+                            </div>
+                        </div>
+
                         <!-- Recipients -->
                         <div>
                             <label class="block text-sm font-medium mb-2">Recipients</label>
@@ -287,7 +373,68 @@
     </main>
 
     <script>
-    // Initialize
+    // AI Templates Database
+    const aiTemplates = {
+        sales: [
+            {
+                name: "Sales Pitch - High Conversion",
+                subject: "Quick question about {company}'s growth",
+                body: "Hi {name},\n\nI noticed {company} is doing impressive work in the industry. I have some ideas that could help accelerate your growth by 30-40%.\n\nWould you have 15 minutes this week for a quick chat?\n\nBest regards,\n[Your Name]"
+            },
+            {
+                name: "Value Proposition",
+                subject: "How {company} can save 20% on operations",
+                body: "Hello {name},\n\nBased on my analysis of companies like {company}, I've identified opportunities to reduce operational costs by 20% while improving efficiency.\n\nInterested in learning more?\n\nKind regards,\n[Your Name]"
+            }
+        ],
+        followup: [
+            {
+                name: "Gentle Follow-up",
+                subject: "Following up on my previous email",
+                body: "Hi {name},\n\nJust wanted to follow up on my previous email regarding opportunities for {company}.\n\nDid you get a chance to review it? I'd love to hear your thoughts.\n\nBest regards,\n[Your Name]"
+            },
+            {
+                name: "Value-add Follow-up",
+                subject: "Additional insights for {company}",
+                body: "Hello {name},\n\nI was thinking more about {company}'s challenges and wanted to share an additional insight that might be helpful.\n\n[Insert specific insight]\n\nWould still love to connect if you're open to it.\n\nKind regards,\n[Your Name]"
+            }
+        ],
+        networking: [
+            {
+                name: "Professional Connection",
+                subject: "Connecting from the industry",
+                body: "Hi {name},\n\nI came across your profile and was impressed by {company}'s work in the industry. I'd love to connect and learn more about your journey.\n\nWould you be open to a virtual coffee chat?\n\nBest regards,\n[Your Name]"
+            }
+        ],
+        newsletter: [
+            {
+                name: "Monthly Newsletter",
+                subject: "This month's insights for {company}",
+                body: "Dear {name},\n\nHere are this month's insights that might be valuable for {company}:\n\n1. Industry trend analysis\n2. Best practices from top performers\n3. Upcoming opportunities\n\nLet me know if you'd like to discuss any of these further!\n\nBest,\n[Your Name]"
+            }
+        ]
+    };
+
+    // Quick Templates
+    const quickTemplates = {
+        professional: {
+            subject: "Introduction from {company}",
+            body: "Hi {name},\n\nI hope this email finds you well. I'm reaching out from {company} to introduce our services.\n\nWe specialize in helping businesses like yours achieve their goals through innovative solutions.\n\nWould you be open to a brief 15-minute call next week to discuss potential synergies?\n\nLooking forward to hearing from you.\n\nBest regards,\n[Your Name]"
+        },
+        followup: {
+            subject: "Following up on our conversation",
+            body: "Hi {name},\n\nI wanted to follow up on our previous conversation regarding {company}.\n\nI've been thinking about how we could potentially collaborate and wanted to share some additional thoughts.\n\nAre you available for a quick chat sometime this week?\n\nBest regards,\n[Your Name]"
+        },
+        cold: {
+            subject: "Potential opportunity for {company}",
+            body: "Hello {name},\n\nI came across {company} and was impressed by your recent achievements.\n\nI believe there might be an opportunity for us to work together. I have some ideas that could help you [achieve specific goal].\n\nWould you be interested in exploring this further?\n\nKind regards,\n[Your Name]"
+        },
+        partnership: {
+            subject: "Partnership opportunity with {company}",
+            body: "Dear {name},\n\nI'm writing to discuss a potential partnership opportunity between our companies.\n\nBased on {company}'s expertise and our capabilities, I believe we could create something truly remarkable together.\n\nWould you be open to discussing this possibility?\n\nWarm regards,\n[Your Name]"
+        }
+    };
+
     document.addEventListener('DOMContentLoaded', function() {
         // Theme Toggle
         const themeToggle = document.getElementById('themeToggle');
@@ -310,6 +457,124 @@
             body: '',
             recipients: ''
         };
+        
+        // Initialize AI Templates
+        function loadAITemplates(category = 'sales') {
+            const container = document.getElementById('aiTemplates');
+            const templates = aiTemplates[category] || [];
+            
+            container.innerHTML = '';
+            
+            if (templates.length === 0) {
+                container.innerHTML = '<div class="text-center py-4 text-gray-500">No templates found</div>';
+                return;
+            }
+            
+            templates.forEach((template, index) => {
+                const card = document.createElement('div');
+                card.className = 'ai-template-card cursor-pointer';
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="font-medium text-gray-800 dark:text-gray-200">${template.name}</div>
+                        <span class="ai-badge">AI</span>
+                    </div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400 mb-3">${template.subject}</div>
+                    <button class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 apply-template" 
+                            data-index="${index}" data-category="${category}">
+                        Apply Template
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+            
+            // Add click handlers for apply buttons
+            document.querySelectorAll('.apply-template').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const index = parseInt(this.dataset.index);
+                    const category = this.dataset.category;
+                    const template = aiTemplates[category][index];
+                    
+                    if (template) {
+                        document.getElementById('subject').value = template.subject;
+                        document.getElementById('body').value = template.body;
+                        updateCounters();
+                        showAlert(`Applied "${template.name}" template`, 'success');
+                    }
+                });
+            });
+            
+            // Add click handlers for entire cards
+            document.querySelectorAll('.ai-template-card').forEach((card, index) => {
+                card.addEventListener('click', function(e) {
+                    if (!e.target.closest('.apply-template')) {
+                        const btn = this.querySelector('.apply-template');
+                        if (btn) btn.click();
+                    }
+                });
+            });
+        }
+        
+        // Load initial AI templates
+        loadAITemplates('sales');
+        
+        // AI Template Category Selection
+        document.querySelectorAll('[data-category]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const category = this.dataset.category;
+                
+                // Update active state
+                document.querySelectorAll('[data-category]').forEach(b => {
+                    b.classList.remove('bg-primary-100', 'dark:bg-primary-900/30', 'text-primary-700', 'dark:text-primary-300');
+                    b.classList.add('bg-gray-100', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300');
+                });
+                this.classList.remove('bg-gray-100', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300');
+                this.classList.add('bg-primary-100', 'dark:bg-primary-900/30', 'text-primary-700', 'dark:text-primary-300');
+                
+                // Load templates
+                loadAITemplates(category);
+            });
+        });
+        
+        // Generate AI Template Button
+        document.getElementById('generateAiTemplate').addEventListener('click', function() {
+            const categories = Object.keys(aiTemplates);
+            const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+            const templates = aiTemplates[randomCategory];
+            
+            if (templates && templates.length > 0) {
+                const randomTemplate = templates[Math.floor(Math.random() * templates.length)];
+                
+                document.getElementById('subject').value = randomTemplate.subject;
+                document.getElementById('body').value = randomTemplate.body;
+                updateCounters();
+                showAlert(`Generated "${randomTemplate.name}" template`, 'success');
+                
+                // Show confetti for fun
+                if (typeof confetti === 'function') {
+                    confetti({
+                        particleCount: 30,
+                        spread: 70,
+                        origin: { y: 0.6 }
+                    });
+                }
+            }
+        });
+        
+        // Quick Template Buttons
+        document.querySelectorAll('[data-template]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const templateName = this.dataset.template;
+                const template = quickTemplates[templateName];
+                
+                if (template) {
+                    document.getElementById('subject').value = template.subject;
+                    document.getElementById('body').value = template.body;
+                    updateCounters();
+                    showAlert(`Applied "${templateName}" template`, 'success');
+                }
+            });
+        });
         
         // Load saved data
         function loadSavedData() {
@@ -520,6 +785,7 @@
             const alert = document.createElement('div');
             alert.className = `fixed top-5 right-5 left-5 max-w-md mx-auto p-4 rounded-xl shadow-lg z-50 ${
                 type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' :
+                type === 'error' ? 'bg-red-50 text-red-800 border border-red-200' :
                 'bg-blue-50 text-blue-800 border border-blue-200'
             }`;
             alert.textContent = message;
