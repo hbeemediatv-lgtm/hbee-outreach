@@ -3,7 +3,7 @@
 <head>
     <!-- Meta Tags -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
   
     <!-- PWA Meta Tags -->
@@ -130,6 +130,7 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
     
     body {
@@ -142,6 +143,7 @@
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       min-height: 100vh;
+      overflow-x: hidden;
     }
 
     .dark body {
@@ -161,11 +163,11 @@
     h4 { font-size: 1.125rem; }
   
     /* Custom scrollbar */
-    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { 
       background: rgba(0, 0, 0, 0.2); 
-      border-radius: 3px;
+      border-radius: 2px;
       transition: background 0.3s ease;
     }
     .dark ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); }
@@ -180,13 +182,14 @@
       font-family: 'Inter', system-ui, sans-serif;
       font-weight: 600;
       font-size: 14px;
-      padding: 12px 24px;
+      padding: 12px 20px;
       transition: all 0.3s ease;
       border: none;
       cursor: pointer;
       box-shadow: 0 4px 6px rgba(14, 165, 233, 0.2);
       position: relative;
       overflow: hidden;
+      touch-action: manipulation;
     }
 
     .hbee-btn::before {
@@ -204,9 +207,8 @@
       left: 100%;
     }
 
-    .hbee-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(14, 165, 233, 0.3);
+    .hbee-btn:active {
+      transform: scale(0.98);
     }
     
     .hbee-btn-secondary {
@@ -220,7 +222,10 @@
     .hbee-btn-secondary:hover {
       background-color: #f9fafb;
       border-color: var(--primary-500);
-      transform: translateY(-2px);
+    }
+    
+    .hbee-btn-secondary:active {
+      transform: scale(0.98);
     }
     
     .dark .hbee-btn-secondary {
@@ -232,16 +237,15 @@
     /* Cards */
     .hbee-card {
       background-color: white;
-      border-radius: 16px;
+      border-radius: 12px;
       border: 1px solid rgba(229, 231, 235, 0.8);
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
       transition: all 0.3s ease;
       backdrop-filter: blur(10px);
     }
     
     .hbee-card:hover { 
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); 
-      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
     }
     
     .dark .hbee-card {
@@ -251,9 +255,9 @@
 
     /* Inputs */
     .hbee-input {
-      border-radius: 10px;
+      border-radius: 8px;
       border: 2px solid #e5e7eb;
-      padding: 12px 16px;
+      padding: 10px 14px;
       font-family: 'Inter', system-ui, sans-serif;
       font-size: 14px;
       transition: all 0.3s ease;
@@ -281,32 +285,42 @@
     
     .animate-fadeIn { animation: fadeIn 0.3s ease forwards; }
     
-    /* NEW: Email link list styling - Compact and simple */
+    /* NEW: Compact Email List for Mobile */
     .email-link-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
       margin-top: 10px;
+      width: 100%;
+      max-width: 100%;
+      overflow: hidden;
     }
     
     .email-link-item {
       display: flex;
       align-items: center;
-      padding: 12px 16px;
+      padding: 10px 12px;
       background: white;
-      border-radius: 10px;
+      border-radius: 8px;
       border: 1px solid #e5e7eb;
       transition: all 0.2s ease;
       cursor: pointer;
       text-decoration: none !important;
       color: inherit;
+      width: 100%;
+      max-width: 100%;
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+    
+    .email-link-item:active {
+      transform: scale(0.98);
+      background: #f0f9ff;
     }
     
     .email-link-item:hover {
       background: #f0f9ff;
       border-color: var(--primary-500);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
     }
     
     .dark .email-link-item {
@@ -315,7 +329,8 @@
       color: #f9fafb;
     }
     
-    .dark .email-link-item:hover {
+    .dark .email-link-item:hover,
+    .dark .email-link-item:active {
       background: rgba(14, 165, 233, 0.1);
       border-color: var(--primary-500);
     }
@@ -324,8 +339,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 24px;
-      height: 24px;
+      min-width: 28px;
+      width: 28px;
+      height: 28px;
       background: linear-gradient(135deg, var(--primary-500), var(--secondary-500));
       color: white;
       border-radius: 50%;
@@ -335,13 +351,29 @@
       flex-shrink: 0;
     }
     
-    .email-address {
-      font-size: 14px;
-      font-weight: 500;
+    .email-content {
       flex: 1;
+      min-width: 0;
+      overflow: hidden;
+    }
+    
+    .email-address {
+      font-size: 13px;
+      font-weight: 500;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      display: block;
+      width: 100%;
+    }
+    
+    .email-status {
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
     
     /* NEW: Real-time loading line */
@@ -357,23 +389,12 @@
       box-shadow: 0 0 10px rgba(14, 165, 233, 0.5);
     }
     
-    /* NEW: Status badges */
-    .status-badge {
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 600;
-      margin-left: 8px;
-      flex-shrink: 0;
-    }
-    
+    /* Status badges */
     .status-sent {
-      background: rgba(16, 185, 129, 0.1);
       color: #10b981;
     }
     
     .status-pending {
-      background: rgba(245, 158, 11, 0.1);
       color: #f59e0b;
     }
     
@@ -381,23 +402,27 @@
     .template-chip {
       display: inline-flex;
       align-items: center;
-      padding: 8px 16px;
+      padding: 6px 12px;
       background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(34, 197, 94, 0.1));
       color: var(--primary-600);
-      border-radius: 20px;
-      font-size: 13px;
+      border-radius: 16px;
+      font-size: 12px;
       font-weight: 500;
-      margin-right: 8px;
-      margin-bottom: 8px;
+      margin-right: 6px;
+      margin-bottom: 6px;
       cursor: pointer;
       transition: all 0.2s ease;
       border: 1px solid transparent;
+      touch-action: manipulation;
+    }
+    
+    .template-chip:active {
+      transform: scale(0.95);
     }
     
     .template-chip:hover {
       background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(34, 197, 94, 0.2));
       border-color: var(--primary-500);
-      transform: translateY(-1px);
     }
     
     .dark .template-chip {
@@ -409,9 +434,9 @@
     .ai-badge {
       background: linear-gradient(135deg, #8b5cf6, #7c3aed);
       color: white;
-      font-size: 10px;
-      padding: 2px 8px;
-      border-radius: 12px;
+      font-size: 9px;
+      padding: 1px 6px;
+      border-radius: 10px;
       margin-left: 6px;
     }
     
@@ -421,7 +446,7 @@
       background-color: #e5e7eb;
       border-radius: 3px;
       overflow: hidden;
-      position: relative;
+      width: 100%;
     }
     
     .progress-bar {
@@ -437,21 +462,22 @@
       position: fixed;
       bottom: 20px;
       right: 20px;
-      width: 56px;
-      height: 56px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--primary-500), var(--secondary-500));
       color: white;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 6px 16px rgba(14, 165, 233, 0.3);
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
       cursor: pointer;
       transition: all 0.3s ease;
       z-index: 1000;
       opacity: 0;
       transform: scale(0) translateY(20px);
       border: none;
+      touch-action: manipulation;
     }
     
     .fab.visible {
@@ -459,9 +485,8 @@
       transform: scale(1) translateY(0);
     }
     
-    .fab:hover {
-      transform: scale(1.1);
-      box-shadow: 0 8px 20px rgba(14, 165, 233, 0.4);
+    .fab:active {
+      transform: scale(0.95);
     }
     
     /* Mobile menu */
@@ -484,41 +509,64 @@
       visibility: visible;
     }
     
-    /* Responsive grid adjustments */
+    /* Responsive adjustments */
     @media (max-width: 768px) {
-      .email-link-list {
-        grid-template-columns: 1fr;
+      .container {
+        padding-left: 12px;
+        padding-right: 12px;
       }
       
-      .mobile-stack {
-        display: flex;
-        flex-direction: column;
+      .hbee-card {
+        padding: 16px !important;
+        margin-bottom: 12px;
       }
       
-      .mobile-full {
-        width: 100% !important;
+      .email-link-item {
+        padding: 8px 10px;
       }
       
-      .mobile-hidden {
-        display: none !important;
+      .email-number {
+        min-width: 24px;
+        width: 24px;
+        height: 24px;
+        font-size: 11px;
+        margin-right: 10px;
       }
       
-      .mobile-block {
-        display: block !important;
+      .email-address {
+        font-size: 12px;
+      }
+      
+      .email-status {
+        font-size: 10px;
+      }
+      
+      h2 {
+        font-size: 1.25rem;
+      }
+      
+      h3, h4 {
+        font-size: 1rem;
       }
     }
     
-    /* Slide out animation for sent emails */
-    @keyframes slideOut {
-      from { transform: translateX(0); opacity: 1; }
-      to { transform: translateX(100%); opacity: 0; }
+    @media (max-width: 480px) {
+      body {
+        font-size: 13px;
+      }
+      
+      .hbee-btn, .hbee-btn-secondary {
+        padding: 10px 16px;
+        font-size: 13px;
+      }
+      
+      .hbee-input {
+        padding: 8px 12px;
+        font-size: 13px;
+      }
     }
     
-    .slide-out {
-      animation: slideOut 0.3s ease forwards;
-    }
-    
-    /* Slide in animation for next email */
+    /* Slide in animation */
     @keyframes slideIn {
       from { transform: translateY(-10px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
@@ -527,48 +575,51 @@
     .slide-in {
       animation: slideIn 0.3s ease forwards;
     }
+    
+    /* Fix for mobile overflow */
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+    
+    main {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
     </style>
 </head>
 
 <body class="text-gray-800 dark:text-gray-100">
-    <!-- NEW: Real-time loading line -->
+    <!-- Real-time loading line -->
     <div id="loadingLine" class="loading-line"></div>
     
     <!-- Navigation -->
-    <nav class="sticky top-0 z-50 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-b border-gray-200 dark:border-gray-700">
-        <div class="container mx-auto px-4 py-3">
+    <nav class="sticky top-0 z-50 bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border-b border-gray-200 dark:border-gray-700">
+        <div class="container mx-auto px-3 py-2">
             <div class="flex items-center justify-between">
                 <!-- Logo -->
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl flex items-center justify-center shadow-lg">
-                        <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-lg flex items-center justify-center shadow">
+                        <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 2L3 7V17L12 22L21 17V7L12 2Z" fill="currentColor" stroke="white" stroke-width="1.5"/>
                             <path d="M12 12L8 10V14L12 16L16 14V10L12 12Z" fill="white"/>
                         </svg>
                     </div>
                     <div>
-                        <h1 class="text-xl font-bold bg-gradient-to-r from-primary-600 to-secondary-500 bg-clip-text text-transparent">
+                        <h1 class="text-lg font-bold bg-gradient-to-r from-primary-600 to-secondary-500 bg-clip-text text-transparent">
                             Hbee Outreach
                         </h1>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">AI-Powered Email Tool</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">AI Email Tool</p>
                     </div>
                 </div>
                 
-                <!-- Desktop Navigation -->
-                <div class="hidden md:flex items-center space-x-6">
-                    <div class="flex items-center space-x-2 text-sm">
-                        <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                        <span class="text-gray-600 dark:text-gray-300">Ready</span>
-                    </div>
-                    <div class="text-sm font-medium">
+                <!-- Stats -->
+                <div class="flex items-center space-x-3">
+                    <div class="text-sm font-medium hidden sm:block">
                         <span id="headerSent" class="text-primary-600 dark:text-primary-400">0</span> sent
                     </div>
-                </div>
-                
-                <!-- Mobile Menu Button & Theme Toggle -->
-                <div class="flex items-center space-x-3">
-                    <button id="themeToggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                        <svg id="lightIcon" class="w-5 h-5 text-gray-600 dark:text-gray-300" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <button id="themeToggle" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <svg id="lightIcon" class="w-4 h-4 text-gray-600 dark:text-gray-300" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 17C14.7614 17 17 14.7614 17 12C17 9.23858 14.7614 7 12 7C9.23858 7 7 9.23858 7 12C7 14.7614 9.23858 17 12 17Z" stroke="currentColor" stroke-width="2"/>
                             <path d="M12 1V3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                             <path d="M12 21V23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -579,14 +630,8 @@
                             <path d="M4.22 19.78L5.64 18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                             <path d="M18.36 5.64L19.78 4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                         </svg>
-                        <svg id="darkIcon" class="w-5 h-5 text-gray-600 dark:text-gray-300 hidden" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg id="darkIcon" class="w-4 h-4 text-gray-600 dark:text-gray-300 hidden" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M21 12.79C20.8427 14.4922 20.2039 16.1144 19.1582 17.4668C18.1125 18.8192 16.7035 19.8458 15.0957 20.4265C13.4879 21.0073 11.748 21.1181 10.0794 20.7461C8.41085 20.3741 6.8829 19.5345 5.67422 18.3258C4.46554 17.1171 3.62594 15.5892 3.2539 13.9206C2.88186 12.252 2.99274 10.5121 3.57348 8.9043C4.15423 7.29651 5.18085 5.8875 6.53323 4.84182C7.88562 3.79614 9.50782 3.15731 11.21 3C10.2133 4.34827 9.73385 6.00945 9.85852 7.68141C9.9832 9.35338 10.7039 10.9251 11.8894 12.1106C13.0749 13.2961 14.6466 14.0168 16.3186 14.1415C17.9906 14.2662 19.6517 13.7867 21 12.79Z" stroke="currentColor" stroke-width="2"/>
-                        </svg>
-                    </button>
-                    
-                    <button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
-                        <svg class="w-6 h-6 text-gray-600 dark:text-gray-300" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                         </svg>
                     </button>
                 </div>
@@ -594,194 +639,107 @@
         </div>
     </nav>
 
-    <!-- Mobile Menu -->
-    <div id="mobileMenu" class="mobile-menu">
-        <div class="flex flex-col items-center justify-center h-full p-6">
-            <button id="closeMobileMenu" class="absolute top-6 right-6 p-2 text-white">
-                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M6 18L18 6M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-            </button>
-            
-            <div class="text-center space-y-8">
-                <div class="space-y-2">
-                    <div class="text-white text-sm opacity-80">Campaign Stats</div>
-                    <div class="text-white text-2xl font-bold">
-                        <span id="mobileSent">0</span> sent
-                    </div>
-                </div>
-                
-                <div class="pt-8">
-                    <button class="hbee-btn w-full max-w-xs" onclick="document.getElementById('mobileMenu').classList.remove('active')">
-                        Start Campaign
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-6">
+    <main class="container mx-auto px-3 py-4">
         <!-- Hero Section -->
-        <div class="text-center mb-8 animate-fadeIn">
-            <h2 class="text-2xl md:text-3xl font-bold mb-3">AI-Powered Email Campaigns</h2>
-            <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto px-4">
+        <div class="text-center mb-6">
+            <h2 class="text-xl font-bold mb-2">AI-Powered Email Campaigns</h2>
+            <p class="text-gray-600 dark:text-gray-400 text-sm">
                 Professional bulk email tool with AI templates, smart automation, and real-time analytics
             </p>
         </div>
 
         <!-- Main Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <!-- Left Column - Form & Templates -->
-            <div class="lg:col-span-2 space-y-6">
+            <div class="lg:col-span-2 space-y-4">
                 <!-- Quick Templates Section -->
-                <div class="hbee-card p-6 animate-fadeIn" style="animation-delay: 0.1s">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold flex items-center gap-2">
-                            <svg class="w-5 h-5 text-accent-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <div class="hbee-card p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="font-semibold flex items-center gap-2 text-sm">
+                            <svg class="w-4 h-4 text-accent-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M9.663 17H4.495C3.219 17 2.188 15.969 2.188 14.693V4.496C2.188 3.22 3.22 2.188 4.495 2.188H15.692C16.968 2.188 18 3.22 18 4.496V9.663M7.5 14.5L9.5 16.5L14.5 11.5M21.378 15.622C21.378 18.742 18.856 21.264 15.736 21.264C12.616 21.264 10.094 18.742 10.094 15.622C10.094 12.502 12.616 9.98 15.736 9.98C18.856 9.98 21.378 12.502 21.378 15.622Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                             AI Smart Templates
                         </h3>
-                        <button id="generateAiTemplate" class="text-sm px-3 py-1 rounded-lg bg-gradient-to-r from-accent-500 to-purple-600 text-white hover:opacity-90">
-                            <svg class="w-4 h-4 inline mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M9.663 17H4.495C3.219 17 2.188 15.969 2.188 14.693V4.496C2.188 3.22 3.22 2.188 4.495 2.188H15.692C16.968 2.188 18 3.22 18 4.496V9.663M7.5 14.5L9.5 16.5L14.5 11.5M21.378 15.622C21.378 18.742 18.856 21.264 15.736 21.264C12.616 21.264 10.094 18.742 10.094 15.622C10.094 12.502 12.616 9.98 15.736 9.98C18.856 9.98 21.378 12.502 21.378 15.622Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                            Generate AI Template
+                        <button id="generateAiTemplate" class="text-xs px-3 py-1 rounded-lg bg-gradient-to-r from-accent-500 to-purple-600 text-white">
+                            Generate AI
                         </button>
                     </div>
                     
-                    <!-- AI Template Categories -->
-                    <div class="mb-4">
-                        <div class="text-sm font-medium mb-2 text-gray-600 dark:text-gray-400">Select Category:</div>
-                        <div class="flex flex-wrap gap-2">
-                            <button data-category="sales" class="template-chip active">
-                                <svg class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12 8V12M12 16H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                                </svg>
-                                Sales Outreach
-                            </button>
-                            <button data-category="followup" class="template-chip">
-                                <svg class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M17 8H21M17 12H21M17 16H21M9 11C9 12.6569 7.65685 14 6 14C4.34315 14 3 12.6569 3 11C3 9.34315 4.34315 8 6 8C7.65685 8 9 9.34315 9 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                                </svg>
-                                Follow-up
-                            </button>
-                            <button data-category="networking" class="template-chip">
-                                <svg class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" stroke-width="2"/>
-                                    <path d="M23 21V19C22.9993 18.1137 22.7044 17.2528 22.1614 16.5523C21.6184 15.8519 20.8581 15.3516 20 15.13" stroke="currentColor" stroke-width="2"/>
-                                    <path d="M16 3.13C16.8604 3.35031 17.623 3.85071 18.1676 4.55232C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89318 18.7122 8.75608 18.1676 9.45769C17.623 10.1593 16.8604 10.6597 16 10.88" stroke="currentColor" stroke-width="2"/>
-                                    <path d="M9 11C11.2091 11 13 9.20914 13 7C13 4.79086 11.2091 3 9 3C6.79086 3 5 4.79086 5 7C5 9.20914 6.79086 11 9 11Z" stroke="currentColor" stroke-width="2"/>
-                                </svg>
-                                Networking
-                            </button>
-                            <button data-category="newsletter" class="template-chip">
-                                <svg class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M19 20H5C3.89543 20 3 19.1046 3 18V6C3 4.89543 3.89543 4 5 4H19C20.1046 4 21 4.89543 21 6V18C21 19.1046 20.1046 20 19 20Z" stroke="currentColor" stroke-width="2"/>
-                                    <path d="M3 8L12 13L21 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                                </svg>
-                                Newsletter
-                            </button>
+                    <div class="mb-3">
+                        <div class="text-xs font-medium mb-1 text-gray-600 dark:text-gray-400">Category:</div>
+                        <div class="flex flex-wrap gap-1">
+                            <button data-category="sales" class="template-chip active">Sales</button>
+                            <button data-category="followup" class="template-chip">Follow-up</button>
+                            <button data-category="networking" class="template-chip">Networking</button>
                         </div>
                     </div>
                     
-                    <!-- AI Generated Templates -->
-                    <div id="aiTemplates" class="space-y-3">
-                        <!-- Template will be generated here -->
+                    <div id="aiTemplates" class="space-y-2">
+                        <!-- Templates loaded here -->
                     </div>
                 </div>
 
                 <!-- Campaign Setup -->
-                <div class="hbee-card p-6 animate-fadeIn" style="animation-delay: 0.2s">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between mb-6">
-                        <h3 class="text-lg font-semibold mb-3 md:mb-0 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-primary-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <div class="hbee-card p-4">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                        <h3 class="font-semibold mb-2 md:mb-0 flex items-center gap-2 text-sm">
+                            <svg class="w-4 h-4 text-primary-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M20 4H4C2.89543 4 2 4.89543 2 6V18C2 19.1046 2.89543 20 4 20H20C21.1046 20 22 19.1046 22 18V6C22 4.89543 21.1046 4 20 4Z" stroke="currentColor" stroke-width="2"/>
                                 <path d="M22 7L13.03 12.7C12.7213 12.8934 12.3643 12.996 12 12.996C11.6357 12.996 11.2787 12.8934 10.97 12.7L2 7" stroke="currentColor" stroke-width="2"/>
                             </svg>
                             Campaign Setup
                         </h3>
                         <div class="flex items-center space-x-2">
-                            <span class="text-xs px-3 py-1 rounded-full bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-300">
-                                <svg class="w-3 h-3 inline mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
-                                    <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
+                            <span class="text-xs px-2 py-0.5 rounded-full bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-300">
                                 Spam Protected
                             </span>
                         </div>
                     </div>
 
-                    <form id="campaignForm" class="space-y-6">
-                        <!-- Quick Templates Section -->
-                        <div class="bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-primary-900/10 dark:to-secondary-900/10 p-4 rounded-xl mb-4">
-                            <div class="text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Quick Templates:</div>
-                            <div class="flex flex-wrap gap-2">
+                    <form id="campaignForm" class="space-y-4">
+                        <!-- Quick Templates -->
+                        <div class="bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-primary-900/10 dark:to-secondary-900/10 p-3 rounded-lg mb-3">
+                            <div class="text-xs font-medium mb-1 text-gray-700 dark:text-gray-300">Quick Templates:</div>
+                            <div class="flex flex-wrap gap-1">
                                 <button type="button" data-template="professional" class="template-chip">
-                                    <svg class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2"/>
-                                        <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" stroke-width="2"/>
-                                    </svg>
                                     Professional Intro
                                 </button>
                                 <button type="button" data-template="followup" class="template-chip">
-                                    <svg class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M23 4V10H17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M20 13C19.5758 14.0987 18.8482 15.0642 17.8944 15.7944C16.9406 16.5246 15.7977 16.9916 14.5925 17.148C13.3872 17.3044 12.1658 17.1443 11.0481 16.6835C9.93037 16.2228 8.95866 15.4784 8.23325 14.5317C7.50784 13.5851 7.05438 12.4707 6.91881 11.3001C6.78324 10.1295 6.97073 8.94569 7.46142 7.87324C7.95212 6.80078 8.72887 5.87748 9.71218 5.19755C10.6955 4.51762 11.849 4.10622 13.055 4.00503C14.2609 3.90385 15.4743 4.11665 16.567 4.622" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                                    </svg>
                                     Follow-up
                                 </button>
                                 <button type="button" data-template="cold" class="template-chip">
-                                    <svg class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M9 17H7C5.89543 17 5 16.1046 5 15V5C5 3.89543 5.89543 3 7 3H17C18.1046 3 19 3.89543 19 5V7" stroke="currentColor" stroke-width="2"/>
-                                        <path d="M9 15L15 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                                        <path d="M10 9H15V14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
                                     Cold Outreach
-                                </button>
-                                <button type="button" data-template="partnership" class="template-chip">
-                                    <svg class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" stroke-width="2"/>
-                                        <path d="M23 21V19C22.9993 18.1137 22.7044 17.2528 22.1614 16.5523C21.6184 15.8519 20.8581 15.3516 20 15.13" stroke="currentColor" stroke-width="2"/>
-                                        <path d="M16 3.13C16.8604 3.35031 17.623 3.85071 18.1676 4.55232C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89318 18.7122 8.75608 18.1676 9.45769C17.623 10.1593 16.8604 10.6597 16 10.88" stroke="currentColor" stroke-width="2"/>
-                                        <path d="M9 11C11.2091 11 13 9.20914 13 7C13 4.79086 11.2091 3 9 3C6.79086 3 5 4.79086 5 7C5 9.20914 6.79086 11 9 11Z" stroke="currentColor" stroke-width="2"/>
-                                    </svg>
-                                    Partnership
                                 </button>
                             </div>
                         </div>
 
                         <!-- Recipients -->
                         <div>
-                            <label class="block text-sm font-medium mb-2 flex items-center gap-2">
-                                <svg class="w-4 h-4 text-primary-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <label class="block text-xs font-medium mb-1 flex items-center gap-1">
+                                <svg class="w-3 h-3 text-primary-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" stroke-width="2"/>
                                     <path d="M9 11C11.2091 11 13 9.20914 13 7C13 4.79086 11.2091 3 9 3C6.79086 3 5 4.79086 5 7C5 9.20914 6.79086 11 9 11Z" stroke="currentColor" stroke-width="2"/>
-                                    <path d="M23 21V19C22.9993 18.1137 22.7044 17.2528 22.1614 16.5523C21.6184 15.8519 20.8581 15.3516 20 15.13" stroke="currentColor" stroke-width="2"/>
-                                    <path d="M16 3.13C16.8604 3.35031 17.623 3.85071 18.1676 4.55232C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89318 18.7122 8.75608 18.1676 9.45769C17.623 10.1593 16.8604 10.6597 16 10.88" stroke="currentColor" stroke-width="2"/>
                                 </svg>
                                 Recipients
                             </label>
                             <textarea 
                                 id="recipients" 
-                                class="hbee-input w-full h-32"
-                                placeholder="Enter email addresses (one per line) or paste text..."
-                                rows="4"
+                                class="hbee-input w-full h-24"
+                                placeholder="Enter email addresses (one per line)..."
+                                rows="3"
                             ></textarea>
-                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-2 space-y-2 sm:space-y-0">
-                                <div class="text-sm text-gray-500">
+                            <div class="flex justify-between items-center mt-1">
+                                <div class="text-xs text-gray-500">
                                     <span id="validCount" class="font-medium">0</span> valid • 
                                     <span id="totalCount" class="font-medium">0</span> total
                                 </div>
-                                <div class="flex space-x-2">
-                                    <button type="button" id="validateBtn" class="text-sm px-3 py-1 rounded-lg bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-300 hover:bg-primary-100 dark:hover:bg-primary-800/50">
-                                        <svg class="w-3 h-3 inline mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                                        </svg>
+                                <div class="flex space-x-1">
+                                    <button type="button" id="validateBtn" class="text-xs px-2 py-1 rounded bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-300">
                                         Validate
                                     </button>
-                                    <button type="button" id="clearBtn" class="text-sm px-3 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600">
+                                    <button type="button" id="clearBtn" class="text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
                                         Clear
                                     </button>
                                 </div>
@@ -790,8 +748,8 @@
 
                         <!-- Subject -->
                         <div>
-                            <label class="block text-sm font-medium mb-2 flex items-center gap-2">
-                                <svg class="w-4 h-4 text-accent-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <label class="block text-xs font-medium mb-1 flex items-center gap-1">
+                                <svg class="w-3 h-3 text-accent-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M12 20H21M3 20H4.67454C5.16372 20 5.40831 20 5.63849 19.9447C5.84256 19.8957 6.03765 19.8149 6.2166 19.7053C6.41843 19.5816 6.59138 19.4086 6.93729 19.0627L19.5 6.5C20.3284 5.67157 20.3284 4.32843 19.5 3.5C18.6716 2.67157 17.3284 2.67157 16.5 3.5L3.93726 16.0627C3.59136 16.4086 3.4184 16.5816 3.29472 16.7834C3.18506 16.9624 3.10425 17.1574 3.05526 17.3615C3 17.5917 3 17.8363 3 18.3255V20Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
                                 Email Subject
@@ -800,124 +758,67 @@
                                 type="text" 
                                 id="subject" 
                                 class="hbee-input w-full"
-                                placeholder="Enter subject line - Use {name} and {company} for personalization"
+                                placeholder="Subject line - Use {name} and {company}"
                             />
-                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-2 space-y-2 sm:space-y-0">
-                                <div class="flex flex-wrap gap-2">
-                                    <button type="button" data-subject="Quick question about {company}" class="text-xs px-3 py-1 rounded-full bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-300 hover:bg-primary-100 dark:hover:bg-primary-800/50 transition-colors">
-                                        Quick Question
-                                    </button>
-                                    <button type="button" data-subject="Following up from {company}" class="text-xs px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
-                                        Follow Up
-                                    </button>
-                                    <button type="button" data-subject="Introduction from {company}" class="text-xs px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
-                                        Introduction
-                                    </button>
-                                </div>
-                                <span id="subjectLength" class="text-sm text-gray-500">0/100</span>
+                            <div class="flex flex-wrap gap-1 mt-1">
+                                <button type="button" data-subject="Quick question about {company}" class="text-xs px-2 py-0.5 rounded-full bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-300">
+                                    Quick Question
+                                </button>
+                                <button type="button" data-subject="Following up from {company}" class="text-xs px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                                    Follow Up
+                                </button>
                             </div>
                         </div>
 
                         <!-- Message Body -->
                         <div>
-                            <label class="block text-sm font-medium mb-2 flex items-center gap-2">
-                                <svg class="w-4 h-4 text-secondary-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <label class="block text-xs font-medium mb-1 flex items-center gap-1">
+                                <svg class="w-3 h-3 text-secondary-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M14 2H6C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V8L14 2Z" stroke="currentColor" stroke-width="2"/>
                                     <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M16 13H8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                                    <path d="M16 17H8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                                    <path d="M10 9H9H8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                                 </svg>
                                 Message Body
                             </label>
                             <textarea 
                                 id="body" 
-                                class="hbee-input w-full h-40"
-                                placeholder="Write your message here... Use {name} for recipient names and {company} for company names"
-                                rows="6"
+                                class="hbee-input w-full h-32"
+                                placeholder="Write your message... Use {name} for names and {company} for company names"
+                                rows="5"
                             ></textarea>
-                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-2 space-y-2 sm:space-y-0">
-                                <div class="text-sm text-gray-500">
-                                    Tags: <code class="px-2 py-1 rounded bg-gray-100 dark:bg-gray-800">{name}</code>
-                                    <code class="px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 ml-1">{company}</code>
-                                </div>
-                                <span id="bodyLength" class="text-sm text-gray-500">0/2000</span>
-                            </div>
                         </div>
 
                         <!-- Action Buttons -->
-                        <div class="flex flex-col sm:flex-row gap-3 pt-4">
-                            <button type="button" id="previewBtn" class="hbee-btn-secondary flex-1 order-2 sm:order-1">
-                                <svg class="w-4 h-4 inline mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" stroke-width="2"/>
-                                    <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="2"/>
-                                </svg>
-                                Preview Email
+                        <div class="flex gap-2 pt-2">
+                            <button type="button" id="previewBtn" class="hbee-btn-secondary flex-1 text-sm">
+                                Preview
                             </button>
-                            <button type="submit" class="hbee-btn flex-1 order-1 sm:order-2">
-                                <svg class="w-4 h-4 inline mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
+                            <button type="submit" class="hbee-btn flex-1 text-sm">
                                 Generate Campaign
                             </button>
                         </div>
                     </form>
                 </div>
-
-                <!-- File Upload -->
-                <div class="hbee-card p-6 animate-fadeIn" style="animation-delay: 0.3s">
-                    <h4 class="text-lg font-semibold mb-4 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-primary-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                            <path d="M17 8L12 3L7 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M12 3V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        Upload Email List
-                    </h4>
-                    
-                    <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-8 text-center hover:border-primary-300 dark:hover:border-primary-700 transition-colors">
-                        <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M14 2H6C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V8L14 2Z" stroke="currentColor" stroke-width="2"/>
-                            <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M12 18V12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                            <path d="M9 15H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                        <p class="text-gray-600 dark:text-gray-400 mb-4">
-                            Drag & drop CSV, TXT, or Excel files<br class="hidden sm:block">or click to browse
-                        </p>
-                        <input type="file" id="fileUpload" class="hidden" accept=".csv,.txt,.xlsx,.xls">
-                        <button id="uploadBtn" class="hbee-btn-secondary">
-                            <svg class="w-4 h-4 inline mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M9 13H15M12 10L12 16M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                                <path d="M17 8L12 3L7 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M12 3V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                            Choose File
-                        </button>
-                        <div id="fileName" class="mt-3 text-sm text-gray-500"></div>
-                    </div>
-                </div>
             </div>
 
             <!-- Right Column - Dashboard -->
-            <div class="space-y-6">
+            <div class="space-y-4">
                 <!-- Stats Dashboard -->
-                <div class="hbee-card p-6 bg-gradient-to-br from-primary-500 via-primary-600 to-secondary-500 text-white animate-fadeIn" style="animation-delay: 0.4s">
-                    <h4 class="text-lg font-semibold mb-6">Campaign Dashboard</h4>
+                <div class="hbee-card p-4 bg-gradient-to-br from-primary-500 via-primary-600 to-secondary-500 text-white">
+                    <h4 class="font-semibold mb-4 text-sm">Campaign Dashboard</h4>
                     
-                    <div class="grid grid-cols-2 gap-4 mb-6">
-                        <div class="bg-white/10 rounded-xl p-4 backdrop-blur-sm">
-                            <div class="text-2xl font-bold" id="statsSent">0</div>
-                            <div class="text-sm opacity-80 mt-1">Sent</div>
+                    <div class="grid grid-cols-2 gap-3 mb-4">
+                        <div class="bg-white/10 rounded-lg p-3">
+                            <div class="text-xl font-bold" id="statsSent">0</div>
+                            <div class="text-xs opacity-80 mt-0.5">Sent</div>
                         </div>
-                        <div class="bg-white/10 rounded-xl p-4 backdrop-blur-sm">
-                            <div class="text-2xl font-bold" id="statsPending">0</div>
-                            <div class="text-sm opacity-80 mt-1">Pending</div>
+                        <div class="bg-white/10 rounded-lg p-3">
+                            <div class="text-xl font-bold" id="statsPending">0</div>
+                            <div class="text-xs opacity-80 mt-0.5">Pending</div>
                         </div>
                     </div>
                     
-                    <div class="mb-6">
-                        <div class="flex justify-between text-sm mb-2">
+                    <div class="mb-4">
+                        <div class="flex justify-between text-xs mb-1">
                             <span>Progress</span>
                             <span id="progressPercent">0%</span>
                         </div>
@@ -925,88 +826,73 @@
                             <div id="progressBar" class="progress-bar" style="width: 0%"></div>
                         </div>
                     </div>
-                    
-                    <div class="flex gap-2">
-                        <button id="pauseBtn" class="flex-1 bg-white/20 hover:bg-white/30 rounded-lg py-2 text-sm hidden transition-colors">
-                            <svg class="w-4 h-4 inline mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M10 8V16M14 8V16M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2"/>
-                            </svg>
-                            Pause
-                        </button>
-                        <button id="resumeBtn" class="flex-1 bg-white/20 hover:bg-white/30 rounded-lg py-2 text-sm hidden transition-colors">
-                            <svg class="w-4 h-4 inline mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M9 5L16 12L9 19V5Z" stroke="currentColor" stroke-width="2"/>
-                            </svg>
-                            Resume
-                        </button>
-                    </div>
                 </div>
 
-                <!-- NEW: Compact Email List -->
-                <div class="hbee-card p-6 animate-fadeIn" style="animation-delay: 0.5s">
-                    <div class="flex items-center justify-between mb-4">
-                        <h4 class="text-lg font-semibold flex items-center gap-2">
-                            <svg class="w-5 h-5 text-primary-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Email List -->
+                <div class="hbee-card p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <h4 class="font-semibold flex items-center gap-2 text-sm">
+                            <svg class="w-4 h-4 text-primary-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15" stroke="currentColor" stroke-width="2"/>
                                 <path d="M7 10L12 15L17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                             Email Links
                         </h4>
-                        <div class="flex gap-2">
-                            <button id="filterAll" class="text-xs px-3 py-1 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300">
+                        <div class="flex gap-1">
+                            <button id="filterAll" class="text-xs px-2 py-0.5 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300">
                                 ALL
                             </button>
-                            <button id="filterSent" class="text-xs px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                            <button id="filterSent" class="text-xs px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
                                 SENT
                             </button>
-                            <button id="filterPending" class="text-xs px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                            <button id="filterPending" class="text-xs px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
                                 PENDING
                             </button>
                         </div>
                     </div>
                     
-                    <!-- NEW: Compact email link list -->
+                    <!-- Email List Container -->
                     <div id="emailList" class="email-link-list">
-                        <div class="text-center py-8 text-gray-500 col-span-full">
-                            <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <div class="text-center py-6 text-gray-500">
+                            <svg class="w-10 h-10 mx-auto mb-2 text-gray-300" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M20 4H4C2.89543 4 2 4.89543 2 6V18C2 19.1046 2.89543 20 4 20H20C21.1046 20 22 19.1046 22 18V6C22 4.89543 21.1046 4 20 4Z" stroke="currentColor" stroke-width="1.5"/>
                                 <path d="M22 7L13.03 12.7C12.7213 12.8934 12.3643 12.996 12 12.996C11.6357 12.996 11.2787 12.8934 10.97 12.7L2 7" stroke="currentColor" stroke-width="1.5"/>
                             </svg>
-                            <p class="font-medium">No emails generated yet</p>
-                            <p class="text-sm mt-1">Set up your campaign and click "Generate"</p>
+                            <p class="font-medium">No emails generated</p>
+                            <p class="text-xs mt-1">Set up campaign and click "Generate"</p>
                         </div>
                     </div>
                     
                     <!-- Status Summary -->
-                    <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                    <div class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
                         <div class="grid grid-cols-3 gap-2 text-center">
                             <div class="p-2 rounded-lg bg-blue-50 dark:bg-blue-900/20">
-                                <div class="text-lg font-bold text-primary-600 dark:text-primary-400" id="allCount">0</div>
+                                <div class="text-base font-bold text-primary-600 dark:text-primary-400" id="allCount">0</div>
                                 <div class="text-xs text-gray-600 dark:text-gray-400">All</div>
                             </div>
                             <div class="p-2 rounded-lg bg-green-50 dark:bg-green-900/20">
-                                <div class="text-lg font-bold text-green-600 dark:text-green-400" id="sentCount">0</div>
+                                <div class="text-base font-bold text-green-600 dark:text-green-400" id="sentCount">0</div>
                                 <div class="text-xs text-gray-600 dark:text-gray-400">Sent</div>
                             </div>
                             <div class="p-2 rounded-lg bg-yellow-50 dark:bg-yellow-900/20">
-                                <div class="text-lg font-bold text-yellow-600 dark:text-yellow-400" id="pendingCount">0</div>
+                                <div class="text-base font-bold text-yellow-600 dark:text-yellow-400" id="pendingCount">0</div>
                                 <div class="text-xs text-gray-600 dark:text-gray-400">Pending</div>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="flex justify-between text-sm mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
-                        <button id="exportBtn" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 flex items-center">
-                            <svg class="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <div class="flex justify-between text-xs mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+                        <button id="exportBtn" class="text-primary-600 dark:text-primary-400 flex items-center">
+                            <svg class="w-3 h-3 mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15" stroke="currentColor" stroke-width="2"/>
                                 <path d="M7 10L12 15L17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                             Export
                         </button>
-                        <button id="clearAllBtn" class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 flex items-center">
-                            <svg class="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <button id="clearAllBtn" class="text-red-600 dark:text-red-400 flex items-center">
+                            <svg class="w-3 h-3 mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M3 6H5H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                                 <path d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 21 17 21H7C6.46957 21 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                             </svg>
@@ -1019,63 +905,21 @@
     </main>
 
     <!-- Footer -->
-    <footer class="mt-12 py-6 border-t border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
-        <div class="container mx-auto px-4">
-            <div class="text-center text-sm text-gray-600 dark:text-gray-400">
-                <p>© <span id="currentYear"></span> Hbee Outreach Tool. Professional email campaign platform.</p>
-                <p class="mt-1">Built with ❤️ for effective email outreach</p>
+    <footer class="mt-8 py-4 border-t border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50">
+        <div class="container mx-auto px-3">
+            <div class="text-center text-xs text-gray-600 dark:text-gray-400">
+                <p>© <span id="currentYear"></span> Hbee Outreach Tool</p>
+                <p class="mt-0.5">Professional email campaign platform</p>
             </div>
         </div>
     </footer>
 
     <!-- Floating Action Button -->
     <button id="scrollTop" class="fab">
-        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M5 15L12 8L19 15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
     </button>
-
-    <!-- Modals -->
-    <!-- Preview Modal -->
-    <div id="previewModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
-        <div class="bg-white dark:bg-gray-800 rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-fadeIn">
-            <div class="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6 flex justify-between items-center">
-                <h3 class="text-lg font-semibold">Email Preview</h3>
-                <button id="closePreview" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
-                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M6 18L18 6M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
-                </button>
-            </div>
-            
-            <div class="p-6 space-y-6">
-                <div>
-                    <label class="block text-sm font-medium mb-2">Test Email Address</label>
-                    <input type="email" id="previewEmail" class="hbee-input" placeholder="test@example.com">
-                </div>
-                
-                <div>
-                    <div class="font-medium mb-2">Subject</div>
-                    <div id="previewSubject" class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"></div>
-                </div>
-                
-                <div>
-                    <div class="font-medium mb-2">Message Body</div>
-                    <div id="previewBody" class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg whitespace-pre-wrap"></div>
-                </div>
-                
-                <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-                    <button id="sendTest" class="hbee-btn flex-1">
-                        <svg class="w-4 h-4 inline mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        Open Test Email
-                    </button>
-                    <button id="closePreview2" class="hbee-btn-secondary flex-1">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
@@ -1112,30 +956,7 @@
     const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     applyTheme(savedTheme);
     
-    // Mobile Menu
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const closeMobileMenu = document.getElementById('closeMobileMenu');
-    
-    mobileMenuBtn.addEventListener('click', () => {
-        mobileMenu.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    });
-    
-    closeMobileMenu.addEventListener('click', () => {
-        mobileMenu.classList.remove('active');
-        document.body.style.overflow = '';
-    });
-    
-    // Close mobile menu when clicking outside
-    mobileMenu.addEventListener('click', (e) => {
-        if (e.target === mobileMenu) {
-            mobileMenu.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-    });
-    
-    // NEW: Optimized Global State
+    // Global State
     let campaignState = {
         emails: [],
         sentEmails: new Set(),
@@ -1147,7 +968,7 @@
         isLoading: false
     };
     
-    // NEW: Lightweight data storage
+    // Save/Load Data
     function saveCampaignData() {
         try {
             const data = {
@@ -1155,12 +976,11 @@
                 sentEmails: [...campaignState.sentEmails],
                 subject: campaignState.subject,
                 body: campaignState.body,
-                recipients: campaignState.recipients,
-                campaignId: campaignState.campaignId || Date.now().toString()
+                recipients: campaignState.recipients
             };
             localStorage.setItem('hbee_campaign', JSON.stringify(data));
         } catch (e) {
-            console.log('Storage save skipped for performance');
+            console.log('Storage save skipped');
         }
     }
     
@@ -1173,14 +993,11 @@
                 campaignState.subject = data.subject || '';
                 campaignState.body = data.body || '';
                 campaignState.recipients = data.recipients || '';
-                campaignState.campaignId = data.campaignId;
                 
-                // Restore form
                 elements.subject.value = campaignState.subject;
                 elements.body.value = campaignState.body;
                 elements.recipients.value = campaignState.recipients;
                 
-                // Generate links if emails exist
                 if (campaignState.emails.length > 0) {
                     generateEmailLinks(campaignState.emails);
                 }
@@ -1208,6 +1025,13 @@
                 subject: "Following up on my previous email",
                 body: "Hi {name},\n\nJust following up on my previous email regarding {company}.\n\nDid you get a chance to review it?\n\nBest,\n[Your Name]"
             }
+        ],
+        networking: [
+            {
+                name: "Networking",
+                subject: "Connecting from the industry",
+                body: "Hi {name},\n\nI came across your profile and was impressed by {company}'s work.\n\nWould you be open to connecting and sharing insights?\n\nBest,\n[Your Name]"
+            }
         ]
     };
     
@@ -1219,6 +1043,10 @@
         followup: {
             subject: "Following up on our conversation",
             body: "Hi {name},\n\nFollowing up on our previous conversation about {company}.\n\nI wanted to share additional thoughts on potential collaboration.\n\nAvailable for a quick chat this week?\n\nBest,\n[Your Name]"
+        },
+        cold: {
+            subject: "Potential opportunity for {company}",
+            body: "Hello {name},\n\nI came across {company} and was impressed by your recent achievements.\n\nI believe there might be an opportunity for us to work together.\n\nWould you be interested in exploring this further?\n\nKind regards,\n[Your Name]"
         }
     };
     
@@ -1229,45 +1057,36 @@
         body: document.getElementById('body'),
         campaignForm: document.getElementById('campaignForm'),
         emailListContainer: document.getElementById('emailList'),
-        previewModal: document.getElementById('previewModal'),
-        previewSubject: document.getElementById('previewSubject'),
-        previewBody: document.getElementById('previewBody'),
-        previewEmail: document.getElementById('previewEmail'),
-        scrollTop: document.getElementById('scrollTop'),
-        aiTemplatesContainer: document.getElementById('aiTemplates'),
         loadingLine: document.getElementById('loadingLine')
     };
     
-    // NEW: Show loading line
+    // Loading Line Functions
     function showLoading(percent) {
         elements.loadingLine.style.width = percent + '%';
     }
     
-    // NEW: Hide loading line
     function hideLoading() {
         setTimeout(() => {
             elements.loadingLine.style.width = '0%';
-        }, 500);
+        }, 300);
     }
     
     // Initialize AI Templates
     function loadAITemplates(category = 'sales') {
         const templates = aiTemplates[category] || [];
+        elements.aiTemplatesContainer = document.getElementById('aiTemplates');
         elements.aiTemplatesContainer.innerHTML = '';
         
         templates.forEach((template, index) => {
             const templateElement = document.createElement('div');
-            templateElement.className = 'p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 transition-colors cursor-pointer';
+            templateElement.className = 'p-3 rounded border border-gray-200 dark:border-gray-700';
             templateElement.innerHTML = `
-                <div class="flex justify-between items-start mb-2">
-                    <div class="font-medium text-gray-800 dark:text-gray-200">${template.name}</div>
+                <div class="flex justify-between items-start mb-1">
+                    <div class="font-medium text-gray-800 dark:text-gray-200 text-xs">${template.name}</div>
                     <span class="ai-badge text-xs">AI</span>
                 </div>
-                <div class="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">${template.subject}</div>
-                <button class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 flex items-center apply-ai-template" data-index="${index}" data-category="${category}">
-                    <svg class="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
+                <div class="text-xs text-gray-600 dark:text-gray-400 mb-2">${template.subject}</div>
+                <button class="text-xs text-primary-600 dark:text-primary-400 apply-ai-template" data-index="${index}" data-category="${category}">
                     Apply Template
                 </button>
             `;
@@ -1275,58 +1094,41 @@
         });
     }
     
-    loadAITemplates('sales');
+    // Load initial templates
+    setTimeout(() => {
+        loadAITemplates('sales');
+    }, 100);
     
     // Template Category Selection
-    document.querySelectorAll('[data-category]').forEach(button => {
-        button.addEventListener('click', function() {
-            const category = this.dataset.category;
+    document.addEventListener('click', function(e) {
+        if (e.target.matches('[data-category]')) {
+            const category = e.target.dataset.category;
             document.querySelectorAll('[data-category]').forEach(btn => {
                 btn.classList.remove('active');
             });
-            this.classList.add('active');
+            e.target.classList.add('active');
             loadAITemplates(category);
-        });
-    });
-    
-    // Apply AI Template
-    elements.aiTemplatesContainer.addEventListener('click', function(e) {
-        const applyBtn = e.target.closest('.apply-ai-template');
-        if (!applyBtn) return;
-        
-        const index = parseInt(applyBtn.dataset.index);
-        const category = applyBtn.dataset.category;
-        const template = aiTemplates[category][index];
-        
-        if (template) {
-            elements.subject.value = template.subject;
-            elements.body.value = template.body;
-            campaignState.subject = template.subject;
-            campaignState.body = template.body;
-            updateCounters();
         }
-    });
-    
-    // Generate AI Template
-    document.getElementById('generateAiTemplate').addEventListener('click', function() {
-        const categories = ['sales', 'followup'];
-        const randomCategory = categories[Math.floor(Math.random() * categories.length)];
-        const templates = aiTemplates[randomCategory];
-        const randomTemplate = templates[0];
         
-        if (randomTemplate) {
-            elements.subject.value = randomTemplate.subject;
-            elements.body.value = randomTemplate.body;
-            campaignState.subject = randomTemplate.subject;
-            campaignState.body = randomTemplate.body;
-            updateCounters();
+        if (e.target.matches('.apply-ai-template') || e.target.closest('.apply-ai-template')) {
+            const button = e.target.matches('.apply-ai-template') ? e.target : e.target.closest('.apply-ai-template');
+            const index = parseInt(button.dataset.index);
+            const category = button.dataset.category;
+            const template = aiTemplates[category][index];
+            
+            if (template) {
+                elements.subject.value = template.subject;
+                elements.body.value = template.body;
+                campaignState.subject = template.subject;
+                campaignState.body = template.body;
+                updateCounters();
+                showAlert('Template applied', 'success');
+            }
         }
-    });
-    
-    // Quick Templates
-    document.querySelectorAll('[data-template]').forEach(button => {
-        button.addEventListener('click', function() {
-            const templateName = this.dataset.template;
+        
+        if (e.target.matches('[data-template]') || e.target.closest('[data-template]')) {
+            const button = e.target.matches('[data-template]') ? e.target : e.target.closest('[data-template]');
+            const templateName = button.dataset.template;
             const template = quickTemplates[templateName];
             
             if (template) {
@@ -1335,8 +1137,32 @@
                 campaignState.subject = template.subject;
                 campaignState.body = template.body;
                 updateCounters();
+                showAlert('Template applied', 'success');
             }
-        });
+        }
+        
+        if (e.target.matches('[data-subject]') || e.target.closest('[data-subject]')) {
+            const button = e.target.matches('[data-subject]') ? e.target : e.target.closest('[data-subject]');
+            elements.subject.value = button.dataset.subject;
+            campaignState.subject = button.dataset.subject;
+            updateCounters();
+        }
+        
+        if (e.target.id === 'generateAiTemplate' || e.target.closest('#generateAiTemplate')) {
+            const categories = ['sales', 'followup', 'networking'];
+            const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+            const templates = aiTemplates[randomCategory];
+            const randomTemplate = templates[0];
+            
+            if (randomTemplate) {
+                elements.subject.value = randomTemplate.subject;
+                elements.body.value = randomTemplate.body;
+                campaignState.subject = randomTemplate.subject;
+                campaignState.body = randomTemplate.body;
+                updateCounters();
+                showAlert('AI template generated', 'success');
+            }
+        }
     });
     
     // Validation Functions
@@ -1365,12 +1191,6 @@
         document.getElementById('validCount').textContent = validEmails.length;
         document.getElementById('totalCount').textContent = emails.length;
         
-        const subjectLength = elements.subject.value.length;
-        document.getElementById('subjectLength').textContent = `${subjectLength}/100`;
-        
-        const bodyLength = elements.body.value.length;
-        document.getElementById('bodyLength').textContent = `${bodyLength}/2000`;
-        
         campaignState.subject = elements.subject.value;
         campaignState.body = elements.body.value;
         campaignState.recipients = elements.recipients.value;
@@ -1378,7 +1198,7 @@
         saveCampaignData();
     }
     
-    // Debounced save
+    // Event Listeners with debouncing
     let saveTimeout;
     function debouncedSave() {
         clearTimeout(saveTimeout);
@@ -1409,18 +1229,10 @@
         elements.recipients.value = '';
         campaignState.recipients = '';
         updateCounters();
+        showAlert('Recipients cleared', 'info');
     });
     
-    // Subject Quick Buttons
-    document.querySelectorAll('[data-subject]').forEach(button => {
-        button.addEventListener('click', function() {
-            elements.subject.value = this.dataset.subject;
-            campaignState.subject = this.dataset.subject;
-            updateCounters();
-        });
-    });
-    
-    // NEW: Optimized Form Submission with real-time loading
+    // Form Submission with real-time loading
     elements.campaignForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -1445,46 +1257,44 @@
         
         // Show loading line
         showLoading(10);
+        campaignState.isLoading = true;
         
         campaignState.emails = [...new Set(emails)];
         campaignState.recipients = emails.join('\n');
-        campaignState.isLoading = true;
         
-        // Generate emails with real-time progress
-        generateEmailLinksWithProgress(campaignState.emails);
-        
-        // Save data
-        saveCampaignData();
+        // Generate emails with progress
+        await generateEmailLinksWithProgress(campaignState.emails);
         
         // Complete loading
         setTimeout(() => {
             showLoading(100);
             hideLoading();
             campaignState.isLoading = false;
+            saveCampaignData();
             showAlert(`Generated ${campaignState.emails.length} email links!`, 'success');
         }, 500);
     });
     
-    // NEW: Generate emails with progress indicator
+    // Generate emails with progress
     async function generateEmailLinksWithProgress(emails) {
         const emailList = document.getElementById('emailList');
         emailList.innerHTML = '';
         
         if (emails.length === 0) {
             emailList.innerHTML = `
-                <div class="text-center py-8 text-gray-500 col-span-full">
-                    <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <div class="text-center py-6 text-gray-500">
+                    <svg class="w-10 h-10 mx-auto mb-2 text-gray-300" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M20 4H4C2.89543 4 2 4.89543 2 6V18C2 19.1046 2.89543 20 4 20H20C21.1046 20 22 19.1046 22 18V6C22 4.89543 21.1046 4 20 4Z" stroke="currentColor" stroke-width="1.5"/>
                         <path d="M22 7L13.03 12.7C12.7213 12.8934 12.3643 12.996 12 12.996C11.6357 12.996 11.2787 12.8934 10.97 12.7L2 7" stroke="currentColor" stroke-width="1.5"/>
                     </svg>
-                    <p class="font-medium">No emails generated yet</p>
-                    <p class="text-sm mt-1">Set up your campaign and click "Generate"</p>
+                    <p class="font-medium">No emails generated</p>
+                    <p class="text-xs mt-1">Set up campaign and click "Generate"</p>
                 </div>
             `;
             return;
         }
         
-        const batchSize = 10;
+        const batchSize = 20;
         const totalBatches = Math.ceil(emails.length / batchSize);
         
         for (let batch = 0; batch < totalBatches; batch++) {
@@ -1497,7 +1307,11 @@
             showLoading(progress);
             
             // Process batch
-            await processEmailBatch(batchEmails, start);
+            for (let i = 0; i < batchEmails.length; i++) {
+                const email = batchEmails[i];
+                const index = start + i;
+                createEmailLink(email, index);
+            }
             
             // Small delay for smooth animation
             if (batch < totalBatches - 1) {
@@ -1509,76 +1323,67 @@
         applyFilter();
     }
     
-    // NEW: Process email batch
-    async function processEmailBatch(emails, startIndex) {
+    // Create individual email link
+    function createEmailLink(email, index) {
         const emailList = document.getElementById('emailList');
+        const name = extractNameFromEmail(email);
+        const company = extractCompanyFromEmail(email);
         
-        emails.forEach((email, batchIndex) => {
-            const index = startIndex + batchIndex;
-            const name = extractNameFromEmail(email);
-            const company = extractCompanyFromEmail(email);
-            
-            const personalizedSubject = campaignState.subject
-                .replace(/{name}/g, name)
-                .replace(/{company}/g, company);
-            
-            const personalizedBody = campaignState.body
-                .replace(/{name}/g, name)
-                .replace(/{company}/g, company);
-            
-            const encodedSubject = encodeURIComponent(personalizedSubject);
-            const encodedBody = encodeURIComponent(personalizedBody).replace(/\n/g, '%0D%0A');
-            
-            // NEW: Force Gmail app URL
-            const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${encodedSubject}&body=${encodedBody}`;
-            
-            const linkItem = document.createElement('a');
-            linkItem.href = gmailLink;
-            linkItem.target = "_blank";
-            linkItem.className = `email-link-item slide-in ${campaignState.sentEmails.has(email) ? 'sent' : ''}`;
-            linkItem.setAttribute('data-email', email);
-            linkItem.innerHTML = `
-                <div class="email-number">${index + 1}</div>
+        const personalizedSubject = campaignState.subject
+            .replace(/{name}/g, name)
+            .replace(/{company}/g, company);
+        
+        const personalizedBody = campaignState.body
+            .replace(/{name}/g, name)
+            .replace(/{company}/g, company);
+        
+        const encodedSubject = encodeURIComponent(personalizedSubject);
+        const encodedBody = encodeURIComponent(personalizedBody).replace(/\n/g, '%0D%0A');
+        
+        // FIXED: Use mailto: link instead of Gmail URL
+        const mailtoLink = `mailto:${email}?subject=${encodedSubject}&body=${encodedBody}`;
+        
+        const isSent = campaignState.sentEmails.has(email);
+        const statusClass = isSent ? 'status-sent' : 'status-pending';
+        const statusText = isSent ? 'Sent' : 'Pending';
+        
+        const linkItem = document.createElement('a');
+        linkItem.href = mailtoLink;
+        linkItem.className = `email-link-item slide-in ${isSent ? 'sent' : ''}`;
+        linkItem.setAttribute('data-email', email);
+        linkItem.innerHTML = `
+            <div class="email-number">${index + 1}</div>
+            <div class="email-content">
                 <div class="email-address">${email}</div>
-                <div class="status-badge ${campaignState.sentEmails.has(email) ? 'status-sent' : 'status-pending'}">
-                    ${campaignState.sentEmails.has(email) ? 'Sent' : 'Pending'}
+                <div class="email-status ${statusClass}">
+                    ${statusText}
                 </div>
-            `;
-            
-            // Add click handler to mark as sent
-            linkItem.addEventListener('click', function(e) {
-                e.preventDefault();
-                markEmailAsSent(email, this);
-                // Open Gmail after a short delay
-                setTimeout(() => {
-                    window.open(gmailLink, '_blank');
-                }, 100);
-            });
-            
-            emailList.appendChild(linkItem);
-        });
-    }
-    
-    // NEW: Mark email as sent
-    function markEmailAsSent(email, linkElement) {
-        if (!campaignState.sentEmails.has(email)) {
-            campaignState.sentEmails.add(email);
-            linkElement.classList.add('sent');
-            linkElement.querySelector('.status-badge').className = 'status-badge status-sent';
-            linkElement.querySelector('.status-badge').textContent = 'Sent';
-            
-            // Update localStorage
-            saveCampaignData();
-            updateDashboard();
-            
-            // Apply filter if needed
-            if (campaignState.currentFilter === 'pending') {
-                linkElement.style.display = 'none';
+            </div>
+        `;
+        
+        // Add click handler to mark as sent
+        linkItem.addEventListener('click', function(e) {
+            if (!campaignState.sentEmails.has(email)) {
+                campaignState.sentEmails.add(email);
+                this.classList.add('sent');
+                this.querySelector('.email-status').className = 'email-status status-sent';
+                this.querySelector('.email-status').textContent = 'Sent';
+                
+                saveCampaignData();
+                updateDashboard();
+                
+                if (campaignState.currentFilter === 'pending') {
+                    this.style.display = 'none';
+                }
+                
+                showAlert(`Email opened for ${email}`, 'success');
             }
-        }
+        });
+        
+        emailList.appendChild(linkItem);
     }
     
-    // Filter Emails
+    // Filter Functions
     document.getElementById('filterAll').addEventListener('click', function() {
         campaignState.currentFilter = 'all';
         updateFilterButtons('all');
@@ -1651,101 +1456,7 @@
         document.getElementById('progressPercent').textContent = `${progress}%`;
         document.getElementById('progressBar').style.width = `${progress}%`;
         document.getElementById('headerSent').textContent = sent;
-        document.getElementById('mobileSent').textContent = sent;
-        
-        document.getElementById('allCount').textContent = total;
-        document.getElementById('sentCount').textContent = sent;
-        document.getElementById('pendingCount').textContent = pending;
     }
-    
-    // Preview Modal
-    document.getElementById('previewBtn').addEventListener('click', () => {
-        if (!elements.subject.value || !elements.body.value) {
-            showAlert('Please fill in subject and body first', 'error');
-            return;
-        }
-        
-        elements.previewSubject.textContent = elements.subject.value;
-        elements.previewBody.textContent = elements.body.value;
-        elements.previewModal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-    });
-    
-    document.getElementById('closePreview').addEventListener('click', () => {
-        elements.previewModal.classList.add('hidden');
-        document.body.style.overflow = '';
-    });
-    
-    document.getElementById('closePreview2').addEventListener('click', () => {
-        elements.previewModal.classList.add('hidden');
-        document.body.style.overflow = '';
-    });
-    
-    elements.previewModal.addEventListener('click', (e) => {
-        if (e.target === elements.previewModal) {
-            elements.previewModal.classList.add('hidden');
-            document.body.style.overflow = '';
-        }
-    });
-    
-    // Send Test Email
-    document.getElementById('sendTest').addEventListener('click', () => {
-        const testEmail = elements.previewEmail.value.trim();
-        if (!isValidEmail(testEmail)) {
-            showAlert('Please enter a valid test email', 'error');
-            return;
-        }
-        
-        const name = extractNameFromEmail(testEmail);
-        const company = extractCompanyFromEmail(testEmail);
-        
-        const subject = encodeURIComponent(
-            elements.subject.value.replace(/{name}/g, name).replace(/{company}/g, company)
-        );
-        
-        const body = encodeURIComponent(
-            elements.body.value.replace(/{name}/g, name).replace(/{company}/g, company)
-        ).replace(/\n/g, '%0D%0A');
-        
-        const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${testEmail}&su=${subject}&body=${body}`;
-        window.open(gmailLink, '_blank');
-        elements.previewModal.classList.add('hidden');
-        document.body.style.overflow = '';
-    });
-    
-    // File Upload
-    document.getElementById('uploadBtn').addEventListener('click', () => {
-        document.getElementById('fileUpload').click();
-    });
-    
-    document.getElementById('fileUpload').addEventListener('change', function() {
-        const file = this.files[0];
-        if (!file) return;
-        
-        document.getElementById('fileName').textContent = `Selected: ${file.name}`;
-        
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const text = e.target.result;
-            const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
-            const emails = [...new Set(text.match(emailRegex) || [])];
-            
-            if (emails.length > 0) {
-                elements.recipients.value = emails.join('\n');
-                campaignState.recipients = elements.recipients.value;
-                updateCounters();
-                showAlert(`Loaded ${emails.length} emails from file`, 'success');
-            } else {
-                showAlert('No emails found in file', 'error');
-            }
-        };
-        
-        if (file.type.includes('text') || file.name.endsWith('.csv')) {
-            reader.readAsText(file);
-        } else {
-            showAlert('Please upload a text or CSV file', 'error');
-        }
-    });
     
     // Export Emails
     document.getElementById('exportBtn').addEventListener('click', () => {
@@ -1807,13 +1518,13 @@
             elements.body.value = '';
             
             document.getElementById('emailList').innerHTML = `
-                <div class="text-center py-8 text-gray-500 col-span-full">
-                    <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <div class="text-center py-6 text-gray-500">
+                    <svg class="w-10 h-10 mx-auto mb-2 text-gray-300" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M20 4H4C2.89543 4 2 4.89543 2 6V18C2 19.1046 2.89543 20 4 20H20C21.1046 20 22 19.1046 22 18V6C22 4.89543 21.1046 4 20 4Z" stroke="currentColor" stroke-width="1.5"/>
                         <path d="M22 7L13.03 12.7C12.7213 12.8934 12.3643 12.996 12 12.996C11.6357 12.996 11.2787 12.8934 10.97 12.7L2 7" stroke="currentColor" stroke-width="1.5"/>
                     </svg>
-                    <p class="font-medium">No emails generated yet</p>
-                    <p class="text-sm mt-1">Set up your campaign and click "Generate"</p>
+                    <p class="font-medium">No emails generated</p>
+                    <p class="text-xs mt-1">Set up campaign and click "Generate"</p>
                 </div>
             `;
             
@@ -1825,11 +1536,14 @@
     
     // Scroll to Top
     window.addEventListener('scroll', () => {
+        elements.scrollTop = document.getElementById('scrollTop');
         elements.scrollTop.classList.toggle('visible', window.scrollY > 300);
     });
     
-    elements.scrollTop.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.addEventListener('click', function(e) {
+        if (e.target.id === 'scrollTop' || e.target.closest('#scrollTop')) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
     });
     
     // Alert System
@@ -1838,7 +1552,7 @@
         if (existingAlert) existingAlert.remove();
         
         const alert = document.createElement('div');
-        alert.className = `alert-message fixed top-5 right-5 left-5 max-w-md mx-auto p-4 rounded-xl shadow-lg animate-fadeIn z-50 ${
+        alert.className = `alert-message fixed top-4 left-4 right-4 mx-auto max-w-md p-3 rounded-lg shadow-lg animate-fadeIn z-50 ${
             type === 'success' ? 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-800' :
             type === 'error' ? 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800' :
             type === 'warning' ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-800' :
@@ -1846,15 +1560,15 @@
         }`;
         
         alert.innerHTML = `
-            <div class="flex items-center">
-                <svg class="w-5 h-5 mr-3 flex-shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <div class="flex items-center text-sm">
+                <svg class="w-4 h-4 mr-2 flex-shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     ${type === 'success' ? 
-                        '<path d="M22 11.08V12C21.9988 14.1564 21.3005 16.2547 20.0093 17.9818C18.7182 19.709 16.9033 20.9725 14.8354 21.5839C12.7674 22.1953 10.5573 22.1219 8.53447 21.3746C6.51168 20.6273 4.78465 19.2461 3.61096 17.4371C2.43727 15.628 1.87979 13.4881 2.02168 11.3363C2.16356 9.18455 2.99721 7.13631 4.39828 5.49706C5.79935 3.85781 7.69279 2.71537 9.79619 2.24013C11.8996 1.7649 14.1003 1.98232 16.07 2.85999" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M22 4L12 14.01L9 11.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' :
+                        '<path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' :
                     type === 'error' ?
-                        '<path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/><path d="M15 9L9 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M9 9L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' :
+                        '<path d="M15 9L9 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M9 9L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' :
                     type === 'warning' ?
-                        '<path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' :
-                        '<path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/><path d="M12 16V12M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'}
+                        '<path d="M12 9V13M12 17H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' :
+                        '<path d="M13 16H12V12H11M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'}
                 </svg>
                 <span>${message}</span>
             </div>
@@ -1863,7 +1577,8 @@
         document.body.appendChild(alert);
         
         setTimeout(() => {
-            alert.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+            alert.style.opacity = '0';
+            alert.style.transition = 'opacity 0.3s';
             setTimeout(() => alert.remove(), 300);
         }, 3000);
     }
@@ -1878,11 +1593,26 @@
             setTimeout(() => {
                 showAlert('Welcome to Hbee Outreach! Set up your campaign to begin.', 'info');
             }, 1000);
+        } else {
+            showAlert(`Loaded ${campaignState.emails.length} emails from previous session`, 'success');
         }
     });
     
     // Auto-save on page unload
     window.addEventListener('beforeunload', saveCampaignData);
+    
+    // Helper function to generate email links (for initial load)
+    function generateEmailLinks(emails) {
+        const emailList = document.getElementById('emailList');
+        emailList.innerHTML = '';
+        
+        emails.forEach((email, index) => {
+            createEmailLink(email, index);
+        });
+        
+        updateDashboard();
+        applyFilter();
+    }
     </script>
 </body>
 </html>
